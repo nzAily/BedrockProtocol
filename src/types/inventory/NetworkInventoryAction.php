@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\inventory;
 
+use InvalidArgumentException;
+use InvalidStateException;
 use pocketmine\network\mcpe\protocol\PacketDecodeException;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
@@ -121,7 +123,7 @@ class NetworkInventoryAction{
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function write(PacketSerializer $packet, bool $hasItemStackIds) : void{
 		$packet->putUnsignedVarInt($this->sourceType);
@@ -139,7 +141,7 @@ class NetworkInventoryAction{
 				$packet->putVarInt($this->windowId);
 				break;
 			default:
-				throw new \InvalidArgumentException("Unknown inventory action source type $this->sourceType");
+				throw new InvalidArgumentException("Unknown inventory action source type $this->sourceType");
 		}
 
 		$packet->putUnsignedVarInt($this->inventorySlot);
@@ -151,7 +153,7 @@ class NetworkInventoryAction{
 			$packet->putItemStackWithoutStackId($this->newItem->getItemStack());
 			if($hasItemStackIds){
 				if($this->newItemStackId === null){
-					throw new \InvalidStateException("Item stack ID for newItem must be provided");
+					throw new InvalidStateException("Item stack ID for newItem must be provided");
 				}
 				$packet->writeGenericTypeNetworkId($this->newItemStackId);
 			}

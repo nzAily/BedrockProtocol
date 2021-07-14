@@ -141,14 +141,17 @@ class EntityMetadataCollection{
 	}
 
 	/**
+	 * @phpstan-ignore-next-line
 	 * @param Player[] $players
 	 *
+	 * @phpstan-ignore-next-line
 	 * @return Player[][]
 	 */
 	public static function sortByProtocol(array $players) : array{
 		$sortPlayers = [];
 
 		foreach($players as $player){
+			/** @phpstan-ignore-next-line */
 			$protocolId = self::getMetadataProtocol($player->getNetworkSession()->getProtocolId());
 
 			if(isset($sortPlayers[$protocolId])){
@@ -161,6 +164,14 @@ class EntityMetadataCollection{
 		return $sortPlayers;
 	}
 
+	/**
+	 * @param  MetadataProperty[] $properties
+	 * @phpstan-param  array<int, MetadataProperty> $properties
+	 * @param int   $protocolId
+	 *
+	 * @return MetadataProperty[]
+	 * @phpstan-return array<int, MetadataProperty>
+	 */
 	private function convertProperties(array $properties, int $protocolId): array
 	{
 		if ($protocolId <= ProtocolInfo::PROTOCOL_1_16_200) {
