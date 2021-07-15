@@ -29,6 +29,7 @@ use pocketmine\color\Color;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\DimensionIds;
 use pocketmine\network\mcpe\protocol\types\MapDecoration;
+use pocketmine\network\mcpe\protocol\types\MapImage;
 use pocketmine\network\mcpe\protocol\types\MapTrackedObject;
 use function count;
 #ifndef COMPILE
@@ -61,15 +62,10 @@ class ClientboundMapItemDataPacket extends DataPacket implements ClientboundPack
 	public $decorations = [];
 
 	/** @var int */
-	public $width;
-	/** @var int */
-	public $height;
-	/** @var int */
 	public $xOffset = 0;
 	/** @var int */
 	public $yOffset = 0;
-	/** @var Color[][] */
-	public $colors = [];
+	public ?MapImage $colors = null;
 
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->mapId = $in->getEntityUniqueId();
@@ -114,21 +110,17 @@ class ClientboundMapItemDataPacket extends DataPacket implements ClientboundPack
 		}
 
 		if(($this->type & self::BITFLAG_TEXTURE_UPDATE) !== 0){
-			$this->width = $in->getVarInt();
-			$this->height = $in->getVarInt();
+			$width = $in->getVarInt();
+			$height = $in->getVarInt();
 			$this->xOffset = $in->getVarInt();
 			$this->yOffset = $in->getVarInt();
 
 			$count = $in->getUnsignedVarInt();
-			if($count !== $this->width * $this->height){
-				throw new PacketDecodeException("Expected colour count of " . ($this->height * $this->width) . " (height $this->height * width $this->width), got $count");
+			if($count !== $width * $height){
+				throw new PacketDecodeException("Expected colour count of " . ($height * $width) . " (height $height * width $width), got $count");
 			}
 
-			for($y = 0; $y < $this->height; ++$y){
-				for($x = 0; $x < $this->width; ++$x){
-					$this->colors[$y][$x] = Color::fromRGBA(Binary::flipIntEndianness($in->getUnsignedVarInt()));
-				}
-			}
+			$this->colors = MapImage::decode($in, $height, $width);
 		}
 	}
 
@@ -142,7 +134,7 @@ class ClientboundMapItemDataPacket extends DataPacket implements ClientboundPack
 		if(($decorationCount = count($this->decorations)) > 0){
 			$type |= self::BITFLAG_DECORATION_UPDATE;
 		}
-		if(count($this->colors) > 0){
+		if($this->colors !== null){
 			$type |= self::BITFLAG_TEXTURE_UPDATE;
 		}
 
@@ -185,20 +177,15 @@ class ClientboundMapItemDataPacket extends DataPacket implements ClientboundPack
 			}
 		}
 
-		if(($type & self::BITFLAG_TEXTURE_UPDATE) !== 0){
-			$out->putVarInt($this->width);
-			$out->putVarInt($this->height);
+		if($this->colors !== null){
+			$out->putVarInt($this->colors->getWidth());
+			$out->putVarInt($this->colors->getHeight());
 			$out->putVarInt($this->xOffset);
 			$out->putVarInt($this->yOffset);
 
-			$out->putUnsignedVarInt($this->width * $this->height); //list count, but we handle it as a 2D array... thanks for the confusion mojang
+			$out->putUnsignedVarInt($this->colors->getWidth() * $this->colors->getHeight()); //list count, but we handle it as a 2D array... thanks for the confusion mojang
 
-			for($y = 0; $y < $this->height; ++$y){
-				for($x = 0; $x < $this->width; ++$x){
-					//if mojang had any sense this would just be a regular LE int
-					$out->putUnsignedVarInt(Binary::flipIntEndianness($this->colors[$y][$x]->toRGBA()));
-				}
-			}
+			$this->colors->encode($out);
 		}
 	}
 
