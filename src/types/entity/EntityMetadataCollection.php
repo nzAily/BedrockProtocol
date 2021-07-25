@@ -151,13 +151,15 @@ class EntityMetadataCollection{
 		$sortPlayers = [];
 
 		foreach($players as $player){
-			/** @phpstan-ignore-next-line */
-			$protocolId = self::getMetadataProtocol($player->getNetworkSession()->getProtocolId());
+			if($player->isConnected()){
+				/** @phpstan-ignore-next-line */
+				$protocolId = self::getMetadataProtocol($player->getNetworkSession()->getProtocolId());
 
-			if(isset($sortPlayers[$protocolId])){
-				$sortPlayers[$protocolId][] = $player;
-			}else{
-				$sortPlayers[$protocolId] = [$player];
+				if(isset($sortPlayers[$protocolId])){
+					$sortPlayers[$protocolId][] = $player;
+				}else{
+					$sortPlayers[$protocolId] = [$player];
+				}
 			}
 		}
 
