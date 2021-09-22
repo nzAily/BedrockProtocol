@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\login;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\types\skin\PersonaPieceTintColor;
 use pocketmine\network\mcpe\protocol\types\skin\PersonaSkinPiece;
 use pocketmine\network\mcpe\protocol\types\skin\SkinAnimation;
@@ -62,6 +63,13 @@ final class ClientDataToSkinDataHelper{
 				$animation->AnimationExpression
 			);
 		}
+
+		if(isset($clientData->SkinGeometryDataEngineVersion)){
+			$geometryDataEngineVersion = self::safeB64Decode($clientData->SkinGeometryDataEngineVersion, "SkinGeometryDataEngineVersion"); //yes, they actually base64'd the version!
+		}else{
+			$geometryDataEngineVersion = ProtocolInfo::MINECRAFT_VERSION_NETWORK;
+		}
+
 		return new SkinData(
 			$clientData->SkinId,
 			$clientData->PlayFabId ?? '',
@@ -70,7 +78,7 @@ final class ClientDataToSkinDataHelper{
 			$animations,
 			new SkinImage($clientData->CapeImageHeight, $clientData->CapeImageWidth, self::safeB64Decode($clientData->CapeData, "CapeData")),
 			self::safeB64Decode($clientData->SkinGeometryData, "SkinGeometryData"),
-			self::safeB64Decode($clientData->SkinGeometryDataEngineVersion, "SkinGeometryDataEngineVersion"), //yes, they actually base64'd the version!
+			$geometryDataEngineVersion,
 			self::safeB64Decode($clientData->SkinAnimationData, "SkinAnimationData"),
 			$clientData->CapeId,
 			null,

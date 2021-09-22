@@ -57,13 +57,17 @@ class AddVolumeEntityPacket extends DataPacket implements ClientboundPacket{
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->entityNetId = $in->getUnsignedVarInt();
 		$this->data = $in->getNbtCompoundRoot();
-		$this->engineVersion = $in->getString();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$this->engineVersion = $in->getString();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putUnsignedVarInt($this->entityNetId);
 		$out->put((new NetworkNbtSerializer())->write(new TreeRoot($this->data)));
-		$out->putString($this->engineVersion);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$out->putString($this->engineVersion);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

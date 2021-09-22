@@ -228,7 +228,9 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$this->limitedWorldWidth = $in->getLInt();
 		$this->limitedWorldLength = $in->getLInt();
 		$this->isNewNether = $in->getBool();
-		$this->eduSharedUriResource = EducationUriResource::read($in);
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$this->eduSharedUriResource = EducationUriResource::read($in);
+		}
 		if($in->getBool()){
 			$this->experimentalGameplayOverride = $in->getBool();
 		}else{
@@ -315,7 +317,9 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$out->putLInt($this->limitedWorldWidth);
 		$out->putLInt($this->limitedWorldLength);
 		$out->putBool($this->isNewNether);
-		($this->eduSharedUriResource ?? new EducationUriResource("", ""))->write($out);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			($this->eduSharedUriResource ?? new EducationUriResource("", ""))->write($out);
+		}
 		$out->putBool($this->experimentalGameplayOverride !== null);
 		if($this->experimentalGameplayOverride !== null){
 			$out->putBool($this->experimentalGameplayOverride);

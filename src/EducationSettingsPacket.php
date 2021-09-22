@@ -113,42 +113,50 @@ class EducationSettingsPacket extends DataPacket implements ClientboundPacket{
 		$this->codeBuilderDefaultUri = $in->getString();
 		$this->codeBuilderTitle = $in->getString();
 		$this->canResizeCodeBuilder = $in->getBool();
-		$this->disableLegacyTitleBar = $in->getBool();
-		$this->postProcessFilter = $in->getString();
-		$this->screenshotBorderResourcePath = $in->getString();
-		$this->agentCapabilities = $in->getBool() ? EducationSettingsAgentCapabilities::read($in) : null;
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$this->disableLegacyTitleBar = $in->getBool();
+			$this->postProcessFilter = $in->getString();
+			$this->screenshotBorderResourcePath = $in->getString();
+			$this->agentCapabilities = $in->getBool() ? EducationSettingsAgentCapabilities::read($in) : null;
+		}
 		if($in->getBool()){
 			$this->codeBuilderOverrideUri = $in->getString();
 		}else{
 			$this->codeBuilderOverrideUri = null;
 		}
 		$this->hasQuiz = $in->getBool();
-		$this->linkSettings = $in->getBool() ? EducationSettingsExternalLinkSettings::read($in) : null;
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$this->linkSettings = $in->getBool() ? EducationSettingsExternalLinkSettings::read($in) : null;
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putString($this->codeBuilderDefaultUri);
 		$out->putString($this->codeBuilderTitle);
 		$out->putBool($this->canResizeCodeBuilder);
-		$out->putBool($this->disableLegacyTitleBar);
-		$out->putString($this->postProcessFilter);
-		$out->putString($this->screenshotBorderResourcePath);
-		if($this->agentCapabilities !== null){
-			$out->putBool(true);
-			$this->agentCapabilities->write($out);
-		}else{
-			$out->putBool(false);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$out->putBool($this->disableLegacyTitleBar);
+			$out->putString($this->postProcessFilter);
+			$out->putString($this->screenshotBorderResourcePath);
+			if($this->agentCapabilities !== null){
+				$out->putBool(true);
+				$this->agentCapabilities->write($out);
+			}else{
+				$out->putBool(false);
+			}
 		}
 		$out->putBool($this->codeBuilderOverrideUri !== null);
 		if($this->codeBuilderOverrideUri !== null){
 			$out->putString($this->codeBuilderOverrideUri);
 		}
 		$out->putBool($this->hasQuiz);
-		if($this->linkSettings !== null){
-			$out->putBool(true);
-			$this->linkSettings->write($out);
-		}else{
-			$out->putBool(false);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			if($this->linkSettings !== null){
+				$out->putBool(true);
+				$this->linkSettings->write($out);
+			}else{
+				$out->putBool(false);
+			}
 		}
 	}
 

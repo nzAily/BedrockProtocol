@@ -125,7 +125,6 @@ final class ClientData{
 	/** @required */
 	public string $SkinGeometryData;
 
-	/** @required */
 	public string $SkinGeometryDataEngineVersion;
 
 	/** @required */
