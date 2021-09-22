@@ -41,13 +41,14 @@ final class ProtocolInfo{
 	 */
 
 	/** Actual Minecraft: PE protocol version */
-	public const CURRENT_PROTOCOL = self::PROTOCOL_1_17_10;
-	public const ACCEPTED_PROTOCOL = [self::CURRENT_PROTOCOL, self::PROTOCOL_1_16_100, self::PROTOCOL_1_16_200, self::PROTOCOL_1_16_210, self::PROTOCOL_1_16_210, self::PROTOCOL_1_16_220, self::PROTOCOL_1_17_0];
+	public const CURRENT_PROTOCOL = self::PROTOCOL_1_17_30;
+	public const ACCEPTED_PROTOCOL = [self::CURRENT_PROTOCOL, self::PROTOCOL_1_16_100, self::PROTOCOL_1_16_200, self::PROTOCOL_1_16_210, self::PROTOCOL_1_16_220, self::PROTOCOL_1_17_0, self::PROTOCOL_1_17_10];
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
-	public const MINECRAFT_VERSION = 'v1.17.10';
+	public const MINECRAFT_VERSION = 'v1.17.30';
 	/** Version number sent to clients in ping responses. */
-	public const MINECRAFT_VERSION_NETWORK = '1.17.10';
+	public const MINECRAFT_VERSION_NETWORK = '1.17.30';
 
+	public const PROTOCOL_1_17_30 = 465;
 	public const PROTOCOL_1_17_10 = 448;
 	public const PROTOCOL_1_17_0 = 440;
 	public const PROTOCOL_1_16_220 = 431;
@@ -224,5 +225,9 @@ final class ProtocolInfo{
 	public const REMOVE_VOLUME_ENTITY_PACKET = 0xa7;
 	public const SIMULATION_TYPE_PACKET = 0xa8;
 	public const NPC_DIALOGUE_PACKET = 0xa9;
+	public const EDU_URI_RESOURCE_PACKET = 0xaa;
+	public const CREATE_PHOTO_PACKET = 0xab;
+	public const UPDATE_SUB_CHUNK_BLOCKS_PACKET = 0xac;
+	public const PHOTO_INFO_REQUEST_PACKET = 0xad;
 
 }

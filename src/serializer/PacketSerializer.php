@@ -30,7 +30,6 @@ use pocketmine\nbt\LittleEndianNbtSerializer;
 use pocketmine\nbt\NbtDataException;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\TreeRoot;
-use pocketmine\network\mcpe\convert\GlobalItemTypeDictionary;
 use pocketmine\network\mcpe\protocol\PacketDecodeException;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\types\BoolGameRule;
@@ -145,10 +144,15 @@ class PacketSerializer extends BinaryStream{
 		}
 		$capeData = $this->getSkinImage();
 		$geometryData = $this->getString();
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$geometryDataVersion = $this->getString();
+		}
 		$animationData = $this->getString();
-		$premium = $this->getBool();
-		$persona = $this->getBool();
-		$capeOnClassic = $this->getBool();
+		if($this->getProtocolId() < ProtocolInfo::PROTOCOL_1_17_30){
+			$premium = $this->getBool();
+			$persona = $this->getBool();
+			$capeOnClassic = $this->getBool();
+		}
 		$capeId = $this->getString();
 		$fullSkinId = $this->getString();
 		$armSize = $this->getString();
@@ -178,7 +182,35 @@ class PacketSerializer extends BinaryStream{
 			);
 		}
 
-		return new SkinData($skinId, $skinPlayFabId ?? '', $skinResourcePatch, $skinData, $animations, $capeData, $geometryData, $animationData, $premium, $persona, $capeOnClassic, $capeId, $fullSkinId, $armSize, $skinColor, $personaPieces, $pieceTintColors);
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$premium = $this->getBool();
+			$persona = $this->getBool();
+			$capeOnClassic = $this->getBool();
+			$isPrimaryUser = $this->getBool();
+		}
+
+		return new SkinData(
+			$skinId,
+			$skinPlayFabId ?? '',
+			$skinResourcePatch,
+			$skinData,
+			$animations,
+			$capeData,
+			$geometryData,
+			$geometryDataVersion ?? ProtocolInfo::MINECRAFT_VERSION_NETWORK,
+			$animationData,
+			$capeId,
+			$fullSkinId,
+			$armSize,
+			$skinColor,
+			$personaPieces,
+			$pieceTintColors,
+			true,
+			$premium,
+			$persona,
+			$capeOnClassic,
+			$isPrimaryUser ?? true,
+		);
 	}
 
 	public function putSkin(SkinData $skin) : void{
@@ -197,10 +229,15 @@ class PacketSerializer extends BinaryStream{
 		}
 		$this->putSkinImage($skin->getCapeImage());
 		$this->putString($skin->getGeometryData());
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$this->putString($skin->getGeometryDataEngineVersion());
+		}
 		$this->putString($skin->getAnimationData());
-		$this->putBool($skin->isPremium());
-		$this->putBool($skin->isPersona());
-		$this->putBool($skin->isPersonaCapeOnClassic());
+		if($this->getProtocolId() < ProtocolInfo::PROTOCOL_1_17_30){
+			$this->putBool($skin->isPremium());
+			$this->putBool($skin->isPersona());
+			$this->putBool($skin->isPersonaCapeOnClassic());
+		}
 		$this->putString($skin->getCapeId());
 		$this->putString($skin->getFullSkinId());
 		$this->putString($skin->getArmSize());
@@ -220,6 +257,12 @@ class PacketSerializer extends BinaryStream{
 			foreach($tint->getColors() as $color){
 				$this->putString($color);
 			}
+		}
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
+			$this->putBool($skin->isPremium());
+			$this->putBool($skin->isPersona());
+			$this->putBool($skin->isPersonaCapeOnClassic());
+			$this->putBool($skin->isPrimaryUser());
 		}
 	}
 
