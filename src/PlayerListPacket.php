@@ -36,9 +36,8 @@ class PlayerListPacket extends DataPacket implements ClientboundPacket{
 	public const TYPE_REMOVE = 1;
 
 	/** @var PlayerListEntry[] */
-	public $entries = [];
-	/** @var int */
-	public $type;
+	public array $entries = [];
+	public int $type;
 
 	/**
 	 * @param PlayerListEntry[] $entries
@@ -68,7 +67,7 @@ class PlayerListPacket extends DataPacket implements ClientboundPacket{
 
 			if($this->type === self::TYPE_ADD){
 				$entry->uuid = $in->getUUID();
-				$entry->entityUniqueId = $in->getEntityUniqueId();
+				$entry->actorUniqueId = $in->getActorUniqueId();
 				$entry->username = $in->getString();
 				$entry->xboxUserId = $in->getString();
 				$entry->platformChatId = $in->getString();
@@ -95,7 +94,7 @@ class PlayerListPacket extends DataPacket implements ClientboundPacket{
 		foreach($this->entries as $entry){
 			if($this->type === self::TYPE_ADD){
 				$out->putUUID($entry->uuid);
-				$out->putEntityUniqueId($entry->entityUniqueId);
+				$out->putActorUniqueId($entry->actorUniqueId);
 				$out->putString($entry->username);
 				$out->putString($entry->xboxUserId);
 				$out->putString($entry->platformChatId);
