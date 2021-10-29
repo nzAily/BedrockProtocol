@@ -39,14 +39,14 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 
 	public UuidInterface $uuid;
 	public string $username;
-	public ?int $actorUniqueId = null; //TODO
+	public int $actorUniqueId;
 	public int $actorRuntimeId;
 	public string $platformChatId = "";
 	public Vector3 $position;
 	public ?Vector3 $motion = null;
 	public float $pitch = 0.0;
 	public float $yaw = 0.0;
-	public ?float $headYaw = null; //TODO
+	public float $headYaw = 0.0;
 	public ItemStackWrapper $item;
 	/**
 	 * @var MetadataProperty[]
@@ -70,14 +70,14 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 	public static function create(
 		UuidInterface $uuid,
 		string $username,
-		?int $actorUniqueId,
+		int $actorUniqueId,
 		int $actorRuntimeId,
 		string $platformChatId,
 		Vector3 $position,
 		?Vector3 $motion,
 		float $pitch,
 		float $yaw,
-		?float $headYaw,
+		float $headYaw,
 		ItemStackWrapper $item,
 		array $metadata,
 		AdventureSettingsPacket $adventureSettingsPacket,
@@ -138,14 +138,14 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putUUID($this->uuid);
 		$out->putString($this->username);
-		$out->putActorUniqueId($this->actorUniqueId ?? $this->actorRuntimeId);
+		$out->putActorUniqueId($this->actorUniqueId);
 		$out->putActorRuntimeId($this->actorRuntimeId);
 		$out->putString($this->platformChatId);
 		$out->putVector3($this->position);
 		$out->putVector3Nullable($this->motion);
 		$out->putLFloat($this->pitch);
 		$out->putLFloat($this->yaw);
-		$out->putLFloat($this->headYaw ?? $this->yaw);
+		$out->putLFloat($this->headYaw);
 		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
 			$this->item->write($out);
 		}else{
