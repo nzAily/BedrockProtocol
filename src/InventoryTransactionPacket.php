@@ -51,7 +51,6 @@ class InventoryTransactionPacket extends DataPacket implements ClientboundPacket
 	/** @var InventoryTransactionChangedSlotsHack[] */
 	public array $requestChangedSlots;
 	public TransactionData $trData;
-	public bool $hasItemStackIds = true;
 
 	/**
 	 * @generate-create-func
@@ -76,10 +75,6 @@ class InventoryTransactionPacket extends DataPacket implements ClientboundPacket
 
 		$transactionType = $in->getUnsignedVarInt();
 
-		if($in->getProtocolId() < ProtocolInfo::PROTOCOL_1_16_220){
-			$this->hasItemStackIds = $in->getBool();
-		}
-
 		switch($transactionType){
 			case self::TYPE_NORMAL:
 				$this->trData = new NormalTransactionData();
@@ -100,7 +95,7 @@ class InventoryTransactionPacket extends DataPacket implements ClientboundPacket
 				throw new PacketDecodeException("Unknown transaction type $transactionType");
 		}
 
-		$this->trData->decode($in, $this->hasItemStackIds);
+		$this->trData->decode($in);
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -114,11 +109,7 @@ class InventoryTransactionPacket extends DataPacket implements ClientboundPacket
 
 		$out->putUnsignedVarInt($this->trData->getTypeId());
 
-		if($out->getProtocolId() < ProtocolInfo::PROTOCOL_1_16_220){
-			$out->putBool($this->hasItemStackIds);
-		}
-
-		$this->trData->encode($out, $this->hasItemStackIds);
+		$this->trData->encode($out);
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

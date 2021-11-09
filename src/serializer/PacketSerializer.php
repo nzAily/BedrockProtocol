@@ -72,9 +72,7 @@ use function substr;
 
 class PacketSerializer extends BinaryStream{
 
-	/** @var int|null */
 	private ?int $protocolId = null;
-	/** @var int */
 	private int $shieldItemRuntimeId;
 	private PacketSerializerContext $context;
 
@@ -235,7 +233,7 @@ class PacketSerializer extends BinaryStream{
 			$this->putString($skin->getGeometryDataEngineVersion());
 		}
 		$this->putString($skin->getAnimationData());
-		if($this->getProtocolId() < ProtocolInfo::PROTOCOL_1_17_30){
+		if($this->getProtocolId() <= ProtocolInfo::PROTOCOL_1_17_10){
 			$this->putBool($skin->isPremium());
 			$this->putBool($skin->isPersona());
 			$this->putBool($skin->isPersonaCapeOnClassic());
@@ -313,7 +311,7 @@ class PacketSerializer extends BinaryStream{
 			return ItemStack::null();
 		}
 
-		if($this->getProtocolId() < ProtocolInfo::PROTOCOL_1_16_220){
+		if($this->getProtocolId() <= ProtocolInfo::PROTOCOL_1_16_210){
 			$auxValue = $this->getVarInt();
 			$meta = $auxValue >> 8;
 			$count = $auxValue & 0xff;
