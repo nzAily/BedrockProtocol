@@ -25,9 +25,9 @@ namespace pocketmine\network\mcpe\protocol\types\entity;
 
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
-use pocketmine\player\Player;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\CacheableNbt;
+use pocketmine\player\Player;
 use function get_class;
 
 class EntityMetadataCollection{
