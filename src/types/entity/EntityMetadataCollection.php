@@ -170,7 +170,6 @@ class EntityMetadataCollection{
 	/**
 	 * @param  MetadataProperty[] $properties
 	 * @phpstan-param  array<int, MetadataProperty> $properties
-	 * @param int   $protocolId
 	 *
 	 * @return MetadataProperty[]
 	 * @phpstan-return array<int, MetadataProperty>
