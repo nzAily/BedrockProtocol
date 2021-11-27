@@ -23,21 +23,8 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types;
 
-use pocketmine\math\Vector3;
-
-class StructureSettings{
-
-	public string $paletteName;
-	public bool $ignoreEntities;
-	public bool $ignoreBlocks;
-	public BlockPosition $dimensions;
-	public BlockPosition $offset;
-	public int $lastTouchedByPlayerID;
-	public int $rotation;
-	public int $mirror;
-	public int $animationMode;
-	public float $animationSeconds;
-	public float $integrityValue;
-	public int $integritySeed;
-	public Vector3 $pivot;
+trait GetTypeIdFromConstTrait{
+	public function getTypeId() : int{
+		return self::ID;
+	}
 }
