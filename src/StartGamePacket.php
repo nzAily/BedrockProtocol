@@ -56,7 +56,6 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 	public string $multiplayerCorrelationId = ""; //TODO: this should be filled with a UUID of some sort
 	public bool $enableNewInventorySystem = false; //TODO
 	public string $serverSoftwareVersion;
-	public int $blockPaletteChecksum;
 
 	/**
 	 * @var BlockPaletteEntry[]
