@@ -95,7 +95,9 @@ class SubChunkPacket extends DataPacket implements ClientboundPacket{
 			SubChunkPacketHeightMapType::ALL_TOO_LOW => SubChunkPacketHeightMapInfo::allTooLow(),
 			default => throw new PacketDecodeException("Unknown heightmap data type $heightMapDataType")
 		};
-		$this->usedBlobHash = $in->getBool() ? $in->getLLong() : null;
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
+			$this->usedBlobHash = $in->getBool() ? $in->getLLong() : null;
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -116,10 +118,12 @@ class SubChunkPacket extends DataPacket implements ClientboundPacket{
 			$out->putByte(SubChunkPacketHeightMapType::DATA);
 			$heightMapData->write($out);
 		}
-		$usedBlobHash = $this->usedBlobHash;
-		$out->putBool($usedBlobHash !== null);
-		if($usedBlobHash !== null){
-			$out->putLLong($usedBlobHash);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
+			$usedBlobHash = $this->usedBlobHash;
+			$out->putBool($usedBlobHash !== null);
+			if($usedBlobHash !== null){
+				$out->putLLong($usedBlobHash);
+			}
 		}
 	}
 

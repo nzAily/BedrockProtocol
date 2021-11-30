@@ -56,6 +56,7 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 	public string $multiplayerCorrelationId = ""; //TODO: this should be filled with a UUID of some sort
 	public bool $enableNewInventorySystem = false; //TODO
 	public string $serverSoftwareVersion;
+	public int $blockPaletteChecksum;
 
 	/**
 	 * @var BlockPaletteEntry[]
@@ -170,6 +171,9 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$this->enableNewInventorySystem = $in->getBool();
 		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
 			$this->serverSoftwareVersion = $in->getString();
+			if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
+				$this->blockPaletteChecksum = $in->getLLong();
+			}
 		}
 	}
 
@@ -211,6 +215,9 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$out->putBool($this->enableNewInventorySystem);
 		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
 			$out->putString($this->serverSoftwareVersion);
+			if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
+				$out->putLLong($this->blockPaletteChecksum);
+			}
 		}
 	}
 
