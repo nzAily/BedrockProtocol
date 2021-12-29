@@ -135,8 +135,8 @@ class EntityMetadataCollection{
 	 * @return MetadataProperty[]
 	 * @phpstan-return array<int, MetadataProperty>
 	 */
-	public function getAll(int $protocolId) : array{
-		return $this->convertProperties($this->properties, $protocolId);
+	public function getAll(int $metadataProtocol) : array{
+		return $this->convertProperties($this->properties, $metadataProtocol);
 	}
 
 	public static function getMetadataProtocol(int $protocolId) : int{
@@ -155,12 +155,12 @@ class EntityMetadataCollection{
 
 		foreach($players as $player){
 			/** @phpstan-ignore-next-line */
-			$protocolId = self::getMetadataProtocol($player->getNetworkSession()->getProtocolId());
+			$metadataProtocol = self::getMetadataProtocol($player->getNetworkSession()->getProtocolId());
 
-			if(isset($sortPlayers[$protocolId])){
-				$sortPlayers[$protocolId][] = $player;
+			if(isset($sortPlayers[$metadataProtocol])){
+				$sortPlayers[$metadataProtocol][] = $player;
 			}else{
-				$sortPlayers[$protocolId] = [$player];
+				$sortPlayers[$metadataProtocol] = [$player];
 			}
 		}
 
@@ -174,9 +174,9 @@ class EntityMetadataCollection{
 	 * @return MetadataProperty[]
 	 * @phpstan-return array<int, MetadataProperty>
 	 */
-	private function convertProperties(array $properties, int $protocolId): array
+	private function convertProperties(array $properties, int $metadataProtocol): array
 	{
-		if ($protocolId <= ProtocolInfo::PROTOCOL_1_16_200) {
+		if ($metadataProtocol <= ProtocolInfo::PROTOCOL_1_16_200) {
 			$newProperties = [];
 
 			foreach ($properties as $key => $property){
@@ -199,8 +199,8 @@ class EntityMetadataCollection{
 	 * @return MetadataProperty[]
 	 * @phpstan-return array<int, MetadataProperty>
 	 */
-	public function getDirty(int $protocolId) : array{
-		return $this->convertProperties($this->dirtyProperties, $protocolId);
+	public function getDirty(int $metadataProtocol) : array{
+		return $this->convertProperties($this->dirtyProperties, $metadataProtocol);
 	}
 
 	/**
