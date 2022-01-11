@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types;
 
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 
 final class PlayerMovementSettings{
@@ -49,7 +48,7 @@ final class PlayerMovementSettings{
 		$movementType = $in->getVarInt();
 		$rewindHistorySize = $in->getVarInt();
 		$serverAuthBlockBreaking = $in->getBool();
-		return new self($movementType, $rewindHistorySize ?? 0, $serverAuthBlockBreaking ?? false);
+		return new self($movementType, $rewindHistorySize, $serverAuthBlockBreaking);
 	}
 
 	public function write(PacketSerializer $out) : void{

@@ -25,7 +25,6 @@ namespace pocketmine\network\mcpe\protocol\types\inventory;
 
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\GetTypeIdFromConstTrait;
 

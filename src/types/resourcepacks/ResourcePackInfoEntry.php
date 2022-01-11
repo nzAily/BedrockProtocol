@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\resourcepacks;
 
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 
 class ResourcePackInfoEntry{
@@ -98,6 +97,6 @@ class ResourcePackInfoEntry{
 		$contentId = $in->getString();
 		$hasScripts = $in->getBool();
 		$rtxCapable = $in->getBool();
-		return new self($uuid, $version, $sizeBytes, $encryptionKey, $subPackName, $contentId, $hasScripts, $rtxCapable ?? false);
+		return new self($uuid, $version, $sizeBytes, $encryptionKey, $subPackName, $contentId, $hasScripts, $rtxCapable);
 	}
 }

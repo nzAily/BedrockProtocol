@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\inventory\stackresponse;
 
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 
 final class ItemStackResponseSlotInfo{
@@ -63,7 +62,7 @@ final class ItemStackResponseSlotInfo{
 		$itemStackId = $in->readGenericTypeNetworkId();
 		$customName = $in->getString();
 		$durabilityCorrection = $in->getVarInt();
-		return new self($slot, $hotbarSlot, $count, $itemStackId, $customName ?? '', $durabilityCorrection ?? 0);
+		return new self($slot, $hotbarSlot, $count, $itemStackId, $customName, $durabilityCorrection);
 	}
 
 	public function write(PacketSerializer $out) : void{
