@@ -61,22 +61,14 @@ class ReleaseItemTransactionData extends TransactionData{
 	protected function decodeData(PacketSerializer $stream) : void{
 		$this->actionType = $stream->getUnsignedVarInt();
 		$this->hotbarSlot = $stream->getVarInt();
-		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->itemInHand = ItemStackWrapper::read($stream);
-		}else{
-			$this->itemInHand = ItemStackWrapper::legacy($stream->getItemStackWithoutStackId());
-		}
+		$this->itemInHand = ItemStackWrapper::read($stream);
 		$this->headPosition = $stream->getVector3();
 	}
 
 	protected function encodeData(PacketSerializer $stream) : void{
 		$stream->putUnsignedVarInt($this->actionType);
 		$stream->putVarInt($this->hotbarSlot);
-		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->itemInHand->write($stream);
-		}else{
-			$stream->putItemStackWithoutStackId($this->itemInHand->getItemStack());
-		}
+		$this->itemInHand->write($stream);
 		$stream->putVector3($this->headPosition);
 	}
 

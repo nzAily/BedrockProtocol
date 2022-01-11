@@ -44,10 +44,6 @@ final class ProtocolInfo{
 	public const CURRENT_PROTOCOL = self::PROTOCOL_1_18_0;
 	public const ACCEPTED_PROTOCOL = [
 		self::CURRENT_PROTOCOL,
-		self::PROTOCOL_1_16_100,
-		self::PROTOCOL_1_16_200,
-		self::PROTOCOL_1_16_210,
-		self::PROTOCOL_1_16_220,
 		self::PROTOCOL_1_17_0,
 		self::PROTOCOL_1_17_10,
 		self::PROTOCOL_1_17_30,
@@ -63,10 +59,6 @@ final class ProtocolInfo{
 	public const PROTOCOL_1_17_30 = 465;
 	public const PROTOCOL_1_17_10 = 448;
 	public const PROTOCOL_1_17_0 = 440;
-	public const PROTOCOL_1_16_220 = 431;
-	public const PROTOCOL_1_16_210 = 428;
-	public const PROTOCOL_1_16_200 = 422;
-	public const PROTOCOL_1_16_100 = 419;
 
 	public const LOGIN_PACKET = 0x01;
 	public const PLAY_STATUS_PACKET = 0x02;

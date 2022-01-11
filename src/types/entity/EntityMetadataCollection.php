@@ -164,62 +164,8 @@ class EntityMetadataCollection{
 	 * @return MetadataProperty[]
 	 * @phpstan-return array<int, MetadataProperty>
 	 */
-	public function getAll(int $metadataProtocol) : array{
-		return $this->convertProperties($this->properties, $metadataProtocol);
-	}
-
-	public static function getMetadataProtocol(int $protocolId) : int{
-		return $protocolId <= ProtocolInfo::PROTOCOL_1_16_200 ? ProtocolInfo::PROTOCOL_1_16_200 : ProtocolInfo::CURRENT_PROTOCOL;
-	}
-
-	/**
-	 * @phpstan-ignore-next-line
-	 * @param Player[] $players
-	 *
-	 * @phpstan-ignore-next-line
-	 * @return Player[][]
-	 */
-	public static function sortByProtocol(array $players) : array{
-		$sortPlayers = [];
-
-		foreach($players as $player){
-			/** @phpstan-ignore-next-line */
-			$metadataProtocol = self::getMetadataProtocol($player->getNetworkSession()->getProtocolId());
-
-			if(isset($sortPlayers[$metadataProtocol])){
-				$sortPlayers[$metadataProtocol][] = $player;
-			}else{
-				$sortPlayers[$metadataProtocol] = [$player];
-			}
-		}
-
-		return $sortPlayers;
-	}
-
-	/**
-	 * @param  MetadataProperty[] $properties
-	 * @phpstan-param  array<int, MetadataProperty> $properties
-	 *
-	 * @return MetadataProperty[]
-	 * @phpstan-return array<int, MetadataProperty>
-	 */
-	private function convertProperties(array $properties, int $metadataProtocol): array
-	{
-		if ($metadataProtocol <= ProtocolInfo::PROTOCOL_1_16_200) {
-			$newProperties = [];
-
-			foreach ($properties as $key => $property){
-				if($key >= EntityMetadataProperties::AREA_EFFECT_CLOUD_RADIUS){
-					--$key;
-				}
-
-				$newProperties[$key] = $property;
-			}
-
-			return $newProperties;
-		}
-
-		return $properties;
+	public function getAll() : array{
+		return $this->properties;
 	}
 
 	/**
@@ -228,8 +174,8 @@ class EntityMetadataCollection{
 	 * @return MetadataProperty[]
 	 * @phpstan-return array<int, MetadataProperty>
 	 */
-	public function getDirty(int $metadataProtocol) : array{
-		return $this->convertProperties($this->dirtyProperties, $metadataProtocol);
+	public function getDirty() : array{
+		return $this->dirtyProperties;
 	}
 
 	/**

@@ -48,9 +48,7 @@ abstract class TransactionData{
 	 * @throws PacketDecodeException
 	 */
 	final public function decode(PacketSerializer $stream) : void{
-		if($stream->getProtocolId() <= ProtocolInfo::PROTOCOL_1_16_210){
-			$this->hasItemStackIds = $stream->getBool();
-		}
+		$this->hasItemStackIds = $stream->getBool();
 
 		$actionCount = $stream->getUnsignedVarInt();
 		for($i = 0; $i < $actionCount; ++$i){
@@ -66,9 +64,7 @@ abstract class TransactionData{
 	abstract protected function decodeData(PacketSerializer $stream) : void;
 
 	final public function encode(PacketSerializer $stream) : void{
-		if($stream->getProtocolId() <= ProtocolInfo::PROTOCOL_1_16_210){
-			$stream->putBool($this->hasItemStackIds);
-		}
+		$stream->putBool($this->hasItemStackIds);
 
 		$stream->putUnsignedVarInt(count($this->actions));
 		foreach($this->actions as $action){

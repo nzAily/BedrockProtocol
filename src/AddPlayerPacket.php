@@ -114,11 +114,7 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 		$this->pitch = $in->getLFloat();
 		$this->yaw = $in->getLFloat();
 		$this->headYaw = $in->getLFloat();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->item = ItemStackWrapper::read($in);
-		}else{
-			$this->item = ItemStackWrapper::legacy($in->getItemStackWithoutStackId());
-		}
+		$this->item = ItemStackWrapper::read($in);
 		$this->metadata = $in->getEntityMetadata();
 
 		$this->adventureSettingsPacket = new AdventureSettingsPacket();
@@ -144,11 +140,7 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 		$out->putLFloat($this->pitch);
 		$out->putLFloat($this->yaw);
 		$out->putLFloat($this->headYaw);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->item->write($out);
-		}else{
-			$out->putItemStackWithoutStackId($this->item->getItemStack());
-		}
+		$this->item->write($out);
 		$out->putEntityMetadata($this->metadata);
 
 		$this->adventureSettingsPacket->encodePayload($out);

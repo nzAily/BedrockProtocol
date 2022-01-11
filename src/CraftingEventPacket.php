@@ -60,25 +60,13 @@ class CraftingEventPacket extends DataPacket implements ServerboundPacket{
 		$this->recipeUUID = $in->getUUID();
 
 		$size = $in->getUnsignedVarInt();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			for($i = 0; $i < $size and $i < 128; ++$i){
-				$this->input[] = ItemStackWrapper::read($in);
-			}
-		}else{
-			for($i = 0; $i < $size and $i < 128; ++$i){
-				$this->input[] = ItemStackWrapper::legacy($in->getItemStackWithoutStackId());
-			}
+		for($i = 0; $i < $size and $i < 128; ++$i){
+			$this->input[] = ItemStackWrapper::read($in);
 		}
 
 		$size = $in->getUnsignedVarInt();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			for($i = 0; $i < $size and $i < 128; ++$i){
-				$this->output[] = ItemStackWrapper::read($in);
-			}
-		}else{
-			for($i = 0; $i < $size and $i < 128; ++$i){
-				$this->output[] = ItemStackWrapper::legacy($in->getItemStackWithoutStackId());
-			}
+		for($i = 0; $i < $size and $i < 128; ++$i){
+			$this->output[] = ItemStackWrapper::read($in);
 		}
 	}
 
@@ -88,25 +76,13 @@ class CraftingEventPacket extends DataPacket implements ServerboundPacket{
 		$out->putUUID($this->recipeUUID);
 
 		$out->putUnsignedVarInt(count($this->input));
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			foreach($this->input as $item){
-				$item->write($out);
-			}
-		}else{
-			foreach($this->input as $item){
-				$out->putItemStackWithoutStackId($item->getItemStack());
-			}
+		foreach($this->input as $item){
+			$item->write($out);
 		}
 
 		$out->putUnsignedVarInt(count($this->output));
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			foreach($this->output as $item){
-				$item->write($out);
-			}
-		}else{
-			foreach($this->output as $item){
-				$out->putItemStackWithoutStackId($item->getItemStack());
-			}
+		foreach($this->output as $item){
+			$item->write($out);
 		}
 	}
 

@@ -85,11 +85,7 @@ class UseItemTransactionData extends TransactionData{
 		$this->blockPosition = $stream->getBlockPosition();
 		$this->face = $stream->getVarInt();
 		$this->hotbarSlot = $stream->getVarInt();
-		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->itemInHand = ItemStackWrapper::read($stream);
-		}else{
-			$this->itemInHand = ItemStackWrapper::legacy($stream->getItemStackWithoutStackId());
-		}
+		$this->itemInHand = ItemStackWrapper::read($stream);
 		$this->playerPosition = $stream->getVector3();
 		$this->clickPosition = $stream->getVector3();
 		$this->blockRuntimeId = $stream->getUnsignedVarInt();
@@ -100,11 +96,7 @@ class UseItemTransactionData extends TransactionData{
 		$stream->putBlockPosition($this->blockPosition);
 		$stream->putVarInt($this->face);
 		$stream->putVarInt($this->hotbarSlot);
-		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->itemInHand->write($stream);
-		}else{
-			$stream->putItemStackWithoutStackId($this->itemInHand->getItemStack());
-		}
+		$this->itemInHand->write($stream);
 		$stream->putVector3($this->playerPosition);
 		$stream->putVector3($this->clickPosition);
 		$stream->putUnsignedVarInt($this->blockRuntimeId);

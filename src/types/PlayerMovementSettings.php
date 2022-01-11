@@ -47,18 +47,14 @@ final class PlayerMovementSettings{
 
 	public static function read(PacketSerializer $in) : self{
 		$movementType = $in->getVarInt();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_210){
-			$rewindHistorySize = $in->getVarInt();
-			$serverAuthBlockBreaking = $in->getBool();
-		}
+		$rewindHistorySize = $in->getVarInt();
+		$serverAuthBlockBreaking = $in->getBool();
 		return new self($movementType, $rewindHistorySize ?? 0, $serverAuthBlockBreaking ?? false);
 	}
 
 	public function write(PacketSerializer $out) : void{
 		$out->putVarInt($this->movementType);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_210){
-			$out->putVarInt($this->rewindHistorySize);
-			$out->putBool($this->serverAuthoritativeBlockBreaking);
-		}
+		$out->putVarInt($this->rewindHistorySize);
+		$out->putBool($this->serverAuthoritativeBlockBreaking);
 	}
 }

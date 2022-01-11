@@ -99,16 +99,8 @@ class NetworkInventoryAction{
 		}
 
 		$this->inventorySlot = $packet->getUnsignedVarInt();
-		if($packet->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->oldItem = ItemStackWrapper::read($packet);
-			$this->newItem = ItemStackWrapper::read($packet);
-		}else{
-			$this->oldItem = ItemStackWrapper::legacy($packet->getItemStackWithoutStackId());
-			$this->newItem = ItemStackWrapper::legacy($packet->getItemStackWithoutStackId());
-			if($hasItemStackIds){
-				$this->newItemStackId = $packet->readGenericTypeNetworkId();
-			}
-		}
+		$this->oldItem = ItemStackWrapper::read($packet);
+		$this->newItem = ItemStackWrapper::read($packet);
 
 		return $this;
 	}
@@ -137,19 +129,7 @@ class NetworkInventoryAction{
 		}
 
 		$packet->putUnsignedVarInt($this->inventorySlot);
-		if($packet->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->oldItem->write($packet);
-			$this->newItem->write($packet);
-		}else{
-			$packet->putItemStackWithoutStackId($this->oldItem->getItemStack());
-			$packet->putItemStackWithoutStackId($this->newItem->getItemStack());
-			if($hasItemStackIds){
-				if($this->newItemStackId === null){
-					/** @phpstan-ignore-next-line */
-					throw new \InvalidStateException("Item stack ID for newItem must be provided");
-				}
-				$packet->writeGenericTypeNetworkId($this->newItemStackId);
-			}
-		}
+		$this->oldItem->write($packet);
+		$this->newItem->write($packet);
 	}
 }

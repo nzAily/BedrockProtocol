@@ -73,11 +73,7 @@ class UseItemOnEntityTransactionData extends TransactionData{
 		$this->actorRuntimeId = $stream->getActorRuntimeId();
 		$this->actionType = $stream->getUnsignedVarInt();
 		$this->hotbarSlot = $stream->getVarInt();
-		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->itemInHand = ItemStackWrapper::read($stream);
-		}else{
-			$this->itemInHand = ItemStackWrapper::legacy($stream->getItemStackWithoutStackId());
-		}
+		$this->itemInHand = ItemStackWrapper::read($stream);
 		$this->playerPosition = $stream->getVector3();
 		$this->clickPosition = $stream->getVector3();
 	}
@@ -86,11 +82,7 @@ class UseItemOnEntityTransactionData extends TransactionData{
 		$stream->putActorRuntimeId($this->actorRuntimeId);
 		$stream->putUnsignedVarInt($this->actionType);
 		$stream->putVarInt($this->hotbarSlot);
-		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->itemInHand->write($stream);
-		}else{
-			$stream->putItemStackWithoutStackId($this->itemInHand->getItemStack());
-		}
+		$this->itemInHand->write($stream);
 		$stream->putVector3($this->playerPosition);
 		$stream->putVector3($this->clickPosition);
 	}

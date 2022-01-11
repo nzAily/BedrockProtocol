@@ -86,9 +86,7 @@ class ResourcePackInfoEntry{
 		$out->putString($this->subPackName);
 		$out->putString($this->contentId);
 		$out->putBool($this->hasScripts);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_200){
-			$out->putBool($this->isRtxCapable);
-		}
+		$out->putBool($this->isRtxCapable);
 	}
 
 	public static function read(PacketSerializer $in) : self{
@@ -99,9 +97,7 @@ class ResourcePackInfoEntry{
 		$subPackName = $in->getString();
 		$contentId = $in->getString();
 		$hasScripts = $in->getBool();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_200){
-			$rtxCapable = $in->getBool();
-		}
+		$rtxCapable = $in->getBool();
 		return new self($uuid, $version, $sizeBytes, $encryptionKey, $subPackName, $contentId, $hasScripts, $rtxCapable ?? false);
 	}
 }

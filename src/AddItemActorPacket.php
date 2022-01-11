@@ -71,11 +71,7 @@ class AddItemActorPacket extends DataPacket implements ClientboundPacket{
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->actorUniqueId = $in->getActorUniqueId();
 		$this->actorRuntimeId = $in->getActorRuntimeId();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->item = ItemStackWrapper::read($in);
-		}else{
-			$this->item = ItemStackWrapper::legacy($in->getItemStackWithoutStackId());
-		}
+		$this->item = ItemStackWrapper::read($in);
 		$this->position = $in->getVector3();
 		$this->motion = $in->getVector3();
 		$this->metadata = $in->getEntityMetadata();
@@ -85,11 +81,7 @@ class AddItemActorPacket extends DataPacket implements ClientboundPacket{
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putActorUniqueId($this->actorUniqueId);
 		$out->putActorRuntimeId($this->actorRuntimeId);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->item->write($out);
-		}else{
-			$out->putItemStackWithoutStackId($this->item->getItemStack());
-		}
+		$this->item->write($out);
 		$out->putVector3($this->position);
 		$out->putVector3Nullable($this->motion);
 		$out->putEntityMetadata($this->metadata);
