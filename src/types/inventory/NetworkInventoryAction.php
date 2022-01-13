@@ -61,7 +61,6 @@ class NetworkInventoryAction{
 	public int $inventorySlot;
 	public ItemStackWrapper $oldItem;
 	public ItemStackWrapper $newItem;
-	public ?int $newItemStackId = null;
 
 	/**
 	 * @return $this
@@ -69,7 +68,7 @@ class NetworkInventoryAction{
 	 * @throws BinaryDataException
 	 * @throws PacketDecodeException
 	 */
-	public function read(PacketSerializer $packet, bool $hasItemStackIds) : NetworkInventoryAction{
+	public function read(PacketSerializer $packet) : NetworkInventoryAction{
 		$this->sourceType = $packet->getUnsignedVarInt();
 
 		switch($this->sourceType){
@@ -98,7 +97,7 @@ class NetworkInventoryAction{
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function write(PacketSerializer $packet, bool $hasItemStackIds) : void{
+	public function write(PacketSerializer $packet) : void{
 		$packet->putUnsignedVarInt($this->sourceType);
 
 		switch($this->sourceType){

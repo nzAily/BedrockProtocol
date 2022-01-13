@@ -93,6 +93,7 @@ final class ClientData{
 
 	public string $PlatformUserId = ""; //xbox-only, apparently
 
+	/** @required */
 	public string $PlayFabId;
 
 	/** @required */
@@ -116,6 +117,7 @@ final class ClientData{
 	/** @required */
 	public string $SkinGeometryData;
 
+	/** >= PROTOCOL_1_17_30 */
 	public string $SkinGeometryDataEngineVersion;
 
 	/** @required */

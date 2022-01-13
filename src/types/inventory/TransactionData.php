@@ -20,7 +20,6 @@ use pocketmine\utils\BinaryDataException;
 use function count;
 
 abstract class TransactionData{
-	public bool $hasItemStackIds = true;
 	/** @var NetworkInventoryAction[] */
 	protected array $actions = [];
 
@@ -38,11 +37,9 @@ abstract class TransactionData{
 	 * @throws PacketDecodeException
 	 */
 	final public function decode(PacketSerializer $stream) : void{
-		$this->hasItemStackIds = $stream->getBool();
-
 		$actionCount = $stream->getUnsignedVarInt();
 		for($i = 0; $i < $actionCount; ++$i){
-			$this->actions[] = (new NetworkInventoryAction())->read($stream, $this->hasItemStackIds);
+			$this->actions[] = (new NetworkInventoryAction())->read($stream);
 		}
 		$this->decodeData($stream);
 	}
@@ -54,11 +51,9 @@ abstract class TransactionData{
 	abstract protected function decodeData(PacketSerializer $stream) : void;
 
 	final public function encode(PacketSerializer $stream) : void{
-		$stream->putBool($this->hasItemStackIds);
-
 		$stream->putUnsignedVarInt(count($this->actions));
 		foreach($this->actions as $action){
-			$action->write($stream, $this->hasItemStackIds);
+			$action->write($stream);
 		}
 		$this->encodeData($stream);
 	}
