@@ -32,19 +32,21 @@ final class ProtocolInfo{
 	 */
 
 	/** Actual Minecraft: PE protocol version */
-	public const CURRENT_PROTOCOL = self::PROTOCOL_1_18_0;
+	public const CURRENT_PROTOCOL = self::PROTOCOL_1_18_10;
 	public const ACCEPTED_PROTOCOL = [
 		self::CURRENT_PROTOCOL,
+		self::PROTOCOL_1_18_0,
 		self::PROTOCOL_1_17_0,
 		self::PROTOCOL_1_17_10,
 		self::PROTOCOL_1_17_30,
 		self::PROTOCOL_1_17_40
 	];
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
-	public const MINECRAFT_VERSION = 'v1.18.0';
+	public const MINECRAFT_VERSION = 'v1.18.10';
 	/** Version number sent to clients in ping responses. */
-	public const MINECRAFT_VERSION_NETWORK = '1.18.0';
+	public const MINECRAFT_VERSION_NETWORK = '1.18.10';
 
+	public const PROTOCOL_1_18_10 = 486;
 	public const PROTOCOL_1_18_0 = 475;
 	public const PROTOCOL_1_17_40 = 471;
 	public const PROTOCOL_1_17_30 = 465;
@@ -226,5 +228,8 @@ final class ProtocolInfo{
 	public const PHOTO_INFO_REQUEST_PACKET = 0xad;
 	public const SUB_CHUNK_PACKET = 0xae;
 	public const SUB_CHUNK_REQUEST_PACKET = 0xaf;
+	public const PLAYER_START_ITEM_COOLDOWN_PACKET = 0xb0;
+	public const SCRIPT_MESSAGE_PACKET = 0xb1;
+	public const CODE_BUILDER_SOURCE_PACKET = 0xb2;
 
 }
