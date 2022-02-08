@@ -34,12 +34,12 @@ final class ProtocolInfo{
 	/** Actual Minecraft: PE protocol version */
 	public const CURRENT_PROTOCOL = self::PROTOCOL_1_18_10;
 	public const ACCEPTED_PROTOCOL = [
-		self::CURRENT_PROTOCOL,
-		self::PROTOCOL_1_18_0,
 		self::PROTOCOL_1_17_0,
 		self::PROTOCOL_1_17_10,
 		self::PROTOCOL_1_17_30,
-		self::PROTOCOL_1_17_40
+		self::PROTOCOL_1_17_40,
+		self::PROTOCOL_1_18_0,
+		self::CURRENT_PROTOCOL
 	];
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
 	public const MINECRAFT_VERSION = 'v1.18.10';

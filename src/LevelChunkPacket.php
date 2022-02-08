@@ -116,7 +116,7 @@ class LevelChunkPacket extends DataPacket implements ClientboundPacket{
 		$out->putVarInt($this->chunkX);
 		$out->putVarInt($this->chunkZ);
 
-		if($this->clientSubChunkRequestsEnabled){
+		if($this->clientSubChunkRequestsEnabled && $out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_10){
 			if($this->subChunkCount === PHP_INT_MAX){
 				$out->putUnsignedVarInt(self::CLIENT_REQUEST_FULL_COLUMN_FAKE_COUNT);
 			}else{

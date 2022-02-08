@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\protocol\types;
 
 use pocketmine\network\mcpe\protocol\PacketDecodeException;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 
 final class SubChunkPacketEntryCommon{
@@ -36,11 +37,19 @@ final class SubChunkPacketEntryCommon{
 	public function getHeightMap() : ?SubChunkPacketHeightMapInfo{ return $this->heightMap; }
 
 	public static function read(PacketSerializer $in, bool $cacheEnabled) : self{
-		$offset = SubChunkPositionOffset::read($in);
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_10){
+			$offset = SubChunkPositionOffset::read($in);
 
-		$requestResult = $in->getByte();
+			$requestResult = $in->getByte();
 
-		$data = !$cacheEnabled || $requestResult !== SubChunkRequestResult::SUCCESS_ALL_AIR ? $in->getString() : "";
+			$data = !$cacheEnabled || $requestResult !== SubChunkRequestResult::SUCCESS_ALL_AIR ? $in->getString() : "";
+		}else{
+			$offset = new SubChunkPositionOffset(0, 0, 0);
+
+			$data = $in->getString();
+
+			$requestResult = $in->getVarInt();
+		}
 
 		$heightMapDataType = $in->getByte();
 		$heightMapData = match ($heightMapDataType) {
@@ -60,12 +69,17 @@ final class SubChunkPacketEntryCommon{
 	}
 
 	public function write(PacketSerializer $out, bool $cacheEnabled) : void{
-		$this->offset->write($out);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_10){
+			$this->offset->write($out);
 
-		$out->putByte($this->requestResult);
+			$out->putByte($this->requestResult);
 
-		if(!$cacheEnabled || $this->requestResult !== SubChunkRequestResult::SUCCESS_ALL_AIR){
+			if(!$cacheEnabled || $this->requestResult !== SubChunkRequestResult::SUCCESS_ALL_AIR){
+				$out->putString($this->terrainData);
+			}
+		}else{
 			$out->putString($this->terrainData);
+			$out->putVarInt($this->requestResult);
 		}
 
 		if($this->heightMap === null){
