@@ -32,20 +32,23 @@ final class ProtocolInfo{
 	 */
 
 	/** Actual Minecraft: PE protocol version */
-	public const CURRENT_PROTOCOL = self::PROTOCOL_1_18_10;
+	public const CURRENT_PROTOCOL = self::PROTOCOL_1_18_30;
 	public const ACCEPTED_PROTOCOL = [
 		self::PROTOCOL_1_17_0,
 		self::PROTOCOL_1_17_10,
 		self::PROTOCOL_1_17_30,
 		self::PROTOCOL_1_17_40,
 		self::PROTOCOL_1_18_0,
+		self::PROTOCOL_1_18_10,
 		self::CURRENT_PROTOCOL
 	];
-	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
-	public const MINECRAFT_VERSION = 'v1.18.10';
-	/** Version number sent to clients in ping responses. */
-	public const MINECRAFT_VERSION_NETWORK = '1.18.10';
 
+	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
+	public const MINECRAFT_VERSION = 'v1.18.30';
+	/** Version number sent to clients in ping responses. */
+	public const MINECRAFT_VERSION_NETWORK = '1.18.30';
+
+	public const PROTOCOL_1_18_30 = 503;
 	public const PROTOCOL_1_18_10 = 486;
 	public const PROTOCOL_1_18_0 = 475;
 	public const PROTOCOL_1_17_40 = 471;
@@ -231,5 +234,9 @@ final class ProtocolInfo{
 	public const PLAYER_START_ITEM_COOLDOWN_PACKET = 0xb0;
 	public const SCRIPT_MESSAGE_PACKET = 0xb1;
 	public const CODE_BUILDER_SOURCE_PACKET = 0xb2;
+	public const TICKING_AREAS_LOAD_STATUS_PACKET = 0xb3;
+	public const DIMENSION_DATA_PACKET = 0xb4;
+	public const AGENT_ACTION_EVENT_PACKET = 0xb5;
+	public const CHANGE_MOB_PROPERTY_PACKET = 0xb6;
 
 }
