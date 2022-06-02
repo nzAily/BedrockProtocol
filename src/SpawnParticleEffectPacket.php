@@ -25,12 +25,12 @@ class SpawnParticleEffectPacket extends DataPacket implements ClientboundPacket{
 	public int $actorUniqueId = -1; //default none
 	public Vector3 $position;
 	public string $particleName;
-	public string $molangVariablesJson;
+	public ?string $molangVariablesJson = null;
 
 	/**
 	 * @generate-create-func
 	 */
-	public static function create(int $dimensionId, int $actorUniqueId, Vector3 $position, string $particleName, string $molangVariablesJson) : self{
+	public static function create(int $dimensionId, int $actorUniqueId, Vector3 $position, string $particleName, ?string $molangVariablesJson) : self{
 		$result = new self;
 		$result->dimensionId = $dimensionId;
 		$result->actorUniqueId = $actorUniqueId;
@@ -46,7 +46,7 @@ class SpawnParticleEffectPacket extends DataPacket implements ClientboundPacket{
 		$this->position = $in->getVector3();
 		$this->particleName = $in->getString();
 		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_30){
-			$this->molangVariablesJson = $in->getString();
+			$this->molangVariablesJson = $in->getBool() ? $in->getString() : null;
 		}
 	}
 
@@ -56,7 +56,10 @@ class SpawnParticleEffectPacket extends DataPacket implements ClientboundPacket{
 		$out->putVector3($this->position);
 		$out->putString($this->particleName);
 		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_30){
-			$out->putString($this->molangVariablesJson);
+			$out->putBool($this->molangVariablesJson !== null);
+			if($this->molangVariablesJson !== null){
+				$out->putString($this->molangVariablesJson);
+			}
 		}
 	}
 
