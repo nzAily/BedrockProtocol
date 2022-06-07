@@ -173,7 +173,13 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
 			$this->serverSoftwareVersion = $in->getString();
 			if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
-				$this->blockPaletteChecksum = $in->getLLong();
+				if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_0){
+					$this->playerActorProperties = new CacheableNbt($in->getNbtCompoundRoot());
+					$this->blockPaletteChecksum = $in->getLLong();
+					$this->worldTemplateId = $in->getUUID();
+				}else{
+					$this->blockPaletteChecksum = $in->getLLong();
+				}
 			}
 		}
 	}
@@ -217,7 +223,13 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
 			$out->putString($this->serverSoftwareVersion);
 			if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
-				$out->putLLong($this->blockPaletteChecksum);
+				if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_0){
+					$out->put($this->playerActorProperties->getEncodedNbt());
+					$out->putLLong($this->blockPaletteChecksum);
+					$out->putUUID($this->worldTemplateId);
+				}else{
+					$out->putLLong($this->blockPaletteChecksum);
+				}
 			}
 		}
 	}
