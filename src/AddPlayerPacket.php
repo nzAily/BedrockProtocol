@@ -97,6 +97,9 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->uuid = $in->getUUID();
 		$this->username = $in->getString();
+		if($in->getProtocolId() <= ProtocolInfo::PROTOCOL_1_19_0){
+			$in->getActorUniqueId();
+		}
 		$this->actorRuntimeId = $in->getActorRuntimeId();
 		$this->platformChatId = $in->getString();
 		$this->position = $in->getVector3();
@@ -110,8 +113,20 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 		}
 		$this->metadata = $in->getEntityMetadata();
 
-		$this->abilitiesPacket = new UpdateAbilitiesPacket();
-		$this->abilitiesPacket->decodePayload($in);
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_10){
+			$this->abilitiesPacket = new UpdateAbilitiesPacket();
+			$this->abilitiesPacket->decodePayload($in);
+		}else{
+			$packet = new AdventureSettingsPacket();
+			$packet->decodePayload($in);
+
+			$this->abilitiesPacket = UpdateAbilitiesPacket::create(
+				$packet->commandPermission,
+				$packet->playerPermission,
+				$packet->targetActorUniqueId,
+				[]
+			);
+		}
 
 		$linkCount = $in->getUnsignedVarInt();
 		for($i = 0; $i < $linkCount; ++$i){
@@ -125,6 +140,9 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putUUID($this->uuid);
 		$out->putString($this->username);
+		if($out->getProtocolId() <= ProtocolInfo::PROTOCOL_1_19_0){
+			$out->putActorUniqueId($this->abilitiesPacket->getTargetActorUniqueId());
+		}
 		$out->putActorRuntimeId($this->actorRuntimeId);
 		$out->putString($this->platformChatId);
 		$out->putVector3($this->position);
@@ -138,7 +156,19 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 		}
 		$out->putEntityMetadata($this->metadata);
 
-		$this->abilitiesPacket->encodePayload($out);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_10){
+			$this->abilitiesPacket->encodePayload($out);
+		}else{
+			$packet = AdventureSettingsPacket::create(
+				0,
+				$this->abilitiesPacket->getCommandPermission(),
+				0,
+				$this->abilitiesPacket->getPlayerPermission(),
+				0,
+				$this->abilitiesPacket->getTargetActorUniqueId()
+			);
+			$packet->encodePayload($out);
+		}
 
 		$out->putUnsignedVarInt(count($this->links));
 		foreach($this->links as $link){

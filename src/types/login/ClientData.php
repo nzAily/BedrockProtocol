@@ -67,7 +67,7 @@ final class ClientData{
 	/** @required */
 	public int $GuiScale;
 
-	/** @required */
+	/** >= PROTOCOL_1_19_10 */
 	public bool $IsEditorMode;
 
 	/** @required */
