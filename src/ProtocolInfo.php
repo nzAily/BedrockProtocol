@@ -42,7 +42,7 @@ final class ProtocolInfo{
 		self::PROTOCOL_1_18_10,
 		self::PROTOCOL_1_18_30,
 		self::PROTOCOL_1_19_0,
-		self::PROTOCOL_1_19_20,
+		self::PROTOCOL_1_19_10,
 		self::CURRENT_PROTOCOL
 	];
 
