@@ -141,7 +141,7 @@ final class ClientData{
 	/** @required */
 	public bool $ThirdPartyNameOnly;
 
-	/** @required */
+	/** >= PROTOCOL_1_19_20 */
 	public bool $TrustedSkin;
 
 	/** @required */

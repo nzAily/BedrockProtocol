@@ -43,8 +43,10 @@ class NetworkChunkPublisherUpdatePacket extends DataPacket implements Clientboun
 		$this->blockPosition = $in->getSignedBlockPosition();
 		$this->radius = $in->getUnsignedVarInt();
 
-		for($i = 0, $this->savedChunks = [], $count = $in->getLInt(); $i < $count; $i++){
-			$this->savedChunks[] = ChunkPosition::read($in);
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
+			for($i = 0, $this->savedChunks = [], $count = $in->getLInt(); $i < $count; $i++){
+				$this->savedChunks[] = ChunkPosition::read($in);
+			}
 		}
 	}
 
@@ -52,9 +54,11 @@ class NetworkChunkPublisherUpdatePacket extends DataPacket implements Clientboun
 		$out->putSignedBlockPosition($this->blockPosition);
 		$out->putUnsignedVarInt($this->radius);
 
-		$out->putLInt(count($this->savedChunks));
-		foreach($this->savedChunks as $chunk){
-			$chunk->write($out);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
+			$out->putLInt(count($this->savedChunks));
+			foreach($this->savedChunks as $chunk){
+				$chunk->write($out);
+			}
 		}
 	}
 
