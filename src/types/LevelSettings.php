@@ -61,12 +61,16 @@ final class LevelSettings{
 	public bool $isFromWorldTemplate = false;
 	public bool $isWorldTemplateOptionLocked = false;
 	public bool $onlySpawnV1Villagers = false;
+	public bool $disablePersona = false;
+	public bool $disableCustomSkins = false;
 	public string $vanillaVersion = ProtocolInfo::MINECRAFT_VERSION_NETWORK;
 	public int $limitedWorldWidth = 0;
 	public int $limitedWorldLength = 0;
 	public bool $isNewNether = true;
 	public ?EducationUriResource $eduSharedUriResource = null;
 	public ?bool $experimentalGameplayOverride = null;
+	public int $chatRestrictionLevel = ChatRestrictionLevel::NONE;
+	public bool $disablePlayerInteractions = false;
 
 	/**
 	 * @throws BinaryDataException
@@ -125,6 +129,10 @@ final class LevelSettings{
 		$this->isFromWorldTemplate = $in->getBool();
 		$this->isWorldTemplateOptionLocked = $in->getBool();
 		$this->onlySpawnV1Villagers = $in->getBool();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
+			$this->disablePersona = $in->getBool();
+			$this->disableCustomSkins = $in->getBool();
+		}
 		$this->vanillaVersion = $in->getString();
 		$this->limitedWorldWidth = $in->getLInt();
 		$this->limitedWorldLength = $in->getLInt();
@@ -132,10 +140,10 @@ final class LevelSettings{
 		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
 			$this->eduSharedUriResource = EducationUriResource::read($in);
 		}
-		if($in->getBool()){
-			$this->experimentalGameplayOverride = $in->getBool();
-		}else{
-			$this->experimentalGameplayOverride = null;
+		$this->experimentalGameplayOverride = $in->readOptional(\Closure::fromCallable([$in, 'getBool']));
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
+			$this->chatRestrictionLevel = $in->getByte();
+			$this->disablePlayerInteractions = $in->getBool();
 		}
 	}
 
@@ -180,6 +188,10 @@ final class LevelSettings{
 		$out->putBool($this->isFromWorldTemplate);
 		$out->putBool($this->isWorldTemplateOptionLocked);
 		$out->putBool($this->onlySpawnV1Villagers);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
+			$out->putBool($this->disablePersona);
+			$out->putBool($this->disableCustomSkins);
+		}
 		$out->putString($this->vanillaVersion);
 		$out->putLInt($this->limitedWorldWidth);
 		$out->putLInt($this->limitedWorldLength);
@@ -187,9 +199,10 @@ final class LevelSettings{
 		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
 			($this->eduSharedUriResource ?? new EducationUriResource("", ""))->write($out);
 		}
-		$out->putBool($this->experimentalGameplayOverride !== null);
-		if($this->experimentalGameplayOverride !== null){
-			$out->putBool($this->experimentalGameplayOverride);
+		$out->writeOptional($this->experimentalGameplayOverride, \Closure::fromCallable([$out, 'putBool']));
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
+			$out->putByte($this->chatRestrictionLevel);
+			$out->putBool($this->disablePlayerInteractions);
 		}
 	}
 }

@@ -99,16 +99,12 @@ class EducationSettingsPacket extends DataPacket implements ClientboundPacket{
 			$this->disableLegacyTitleBar = $in->getBool();
 			$this->postProcessFilter = $in->getString();
 			$this->screenshotBorderResourcePath = $in->getString();
-			$this->agentCapabilities = $in->getBool() ? EducationSettingsAgentCapabilities::read($in) : null;
+			$this->agentCapabilities = $in->readOptional(fn() => EducationSettingsAgentCapabilities::read($in));
 		}
-		if($in->getBool()){
-			$this->codeBuilderOverrideUri = $in->getString();
-		}else{
-			$this->codeBuilderOverrideUri = null;
-		}
+		$this->codeBuilderOverrideUri = $in->readOptional(fn() => $in->getString());
 		$this->hasQuiz = $in->getBool();
 		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
-			$this->linkSettings = $in->getBool() ? EducationSettingsExternalLinkSettings::read($in) : null;
+			$this->linkSettings = $in->readOptional(fn() => EducationSettingsExternalLinkSettings::read($in));
 		}
 	}
 
@@ -120,25 +116,12 @@ class EducationSettingsPacket extends DataPacket implements ClientboundPacket{
 			$out->putBool($this->disableLegacyTitleBar);
 			$out->putString($this->postProcessFilter);
 			$out->putString($this->screenshotBorderResourcePath);
-			if($this->agentCapabilities !== null){
-				$out->putBool(true);
-				$this->agentCapabilities->write($out);
-			}else{
-				$out->putBool(false);
-			}
+			$out->writeOptional($this->agentCapabilities, fn(EducationSettingsAgentCapabilities $v) => $v->write($out));
 		}
-		$out->putBool($this->codeBuilderOverrideUri !== null);
-		if($this->codeBuilderOverrideUri !== null){
-			$out->putString($this->codeBuilderOverrideUri);
-		}
+		$out->writeOptional($this->codeBuilderOverrideUri, fn(string $v) => $out->putString($v));
 		$out->putBool($this->hasQuiz);
 		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30){
-			if($this->linkSettings !== null){
-				$out->putBool(true);
-				$this->linkSettings->write($out);
-			}else{
-				$out->putBool(false);
-			}
+			$out->writeOptional($this->linkSettings, fn(EducationSettingsExternalLinkSettings $v) => $v->write($out));
 		}
 	}
 

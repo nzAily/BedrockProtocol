@@ -53,6 +53,7 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 	public bool $enableNewInventorySystem = false; //TODO
 	public string $serverSoftwareVersion;
 	public UuidInterface $worldTemplateId; //why is this here twice ??? mojang
+	public bool $enableClientSideChunkGeneration;
 
 	/**
 	 * @var BlockPaletteEntry[]
@@ -101,6 +102,7 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		bool $enableNewInventorySystem,
 		string $serverSoftwareVersion,
 		UuidInterface $worldTemplateId,
+		bool $enableClientSideChunkGeneration,
 		array $blockPalette,
 		int $blockPaletteChecksum,
 		array $itemTable,
@@ -125,6 +127,7 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$result->enableNewInventorySystem = $enableNewInventorySystem;
 		$result->serverSoftwareVersion = $serverSoftwareVersion;
 		$result->worldTemplateId = $worldTemplateId;
+		$result->enableClientSideChunkGeneration = $enableClientSideChunkGeneration;
 		$result->blockPalette = $blockPalette;
 		$result->blockPaletteChecksum = $blockPaletteChecksum;
 		$result->itemTable = $itemTable;
@@ -172,15 +175,16 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$this->enableNewInventorySystem = $in->getBool();
 		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
 			$this->serverSoftwareVersion = $in->getString();
-			if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
-				if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_0){
-					$this->playerActorProperties = new CacheableNbt($in->getNbtCompoundRoot());
-					$this->blockPaletteChecksum = $in->getLLong();
-					$this->worldTemplateId = $in->getUUID();
-				}else{
-					$this->blockPaletteChecksum = $in->getLLong();
-				}
-			}
+		}
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_0){
+			$this->playerActorProperties = new CacheableNbt($in->getNbtCompoundRoot());
+			$this->blockPaletteChecksum = $in->getLLong();
+			$this->worldTemplateId = $in->getUUID();
+		}elseif($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
+			$this->blockPaletteChecksum = $in->getLLong();
+		}
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
+			$this->enableClientSideChunkGeneration = $in->getBool();
 		}
 	}
 
@@ -222,15 +226,16 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$out->putBool($this->enableNewInventorySystem);
 		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
 			$out->putString($this->serverSoftwareVersion);
-			if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
-				if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_0){
-					$out->put($this->playerActorProperties->getEncodedNbt());
-					$out->putLLong($this->blockPaletteChecksum);
-					$out->putUUID($this->worldTemplateId);
-				}else{
-					$out->putLLong($this->blockPaletteChecksum);
-				}
-			}
+		}
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_0){
+			$out->put($this->playerActorProperties->getEncodedNbt());
+			$out->putLLong($this->blockPaletteChecksum);
+			$out->putUUID($this->worldTemplateId);
+		}elseif($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_0){
+			$out->putLLong($this->blockPaletteChecksum);
+		}
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
+			$out->putBool($this->enableClientSideChunkGeneration);
 		}
 	}
 
