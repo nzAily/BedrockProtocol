@@ -764,6 +764,7 @@ class PacketSerializer extends BinaryStream{
 
 		$result->ignoreEntities = $this->getBool();
 		$result->ignoreBlocks = $this->getBool();
+		$result->allowNonTickingChunks = $this->getBool();
 
 		$result->dimensions = $this->getBlockPosition();
 		$result->offset = $this->getBlockPosition();
@@ -785,6 +786,7 @@ class PacketSerializer extends BinaryStream{
 
 		$this->putBool($structureSettings->ignoreEntities);
 		$this->putBool($structureSettings->ignoreBlocks);
+		$this->putBool($structureSettings->allowNonTickingChunks);
 
 		$this->putBlockPosition($structureSettings->dimensions);
 		$this->putBlockPosition($structureSettings->offset);
