@@ -141,7 +141,7 @@ final class EntityMetadataFlags{
 			$flag2Property = $metadata[EntityMetadataProperties::FLAGS2] ?? new LongMetadataProperty(0);
 			$flag1 = $flag1Property->getValue();
 			$flag2 = $flag2Property->getValue();
-			
+
 			if($flag1 === 0 && $flag2 === 0){
 				return $metadata;
 			}
