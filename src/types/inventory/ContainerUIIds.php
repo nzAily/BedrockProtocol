@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\inventory;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
+
 final class ContainerUIIds{
 
 	private function __construct(){
@@ -81,4 +83,24 @@ final class ContainerUIIds{
 	public const BARREL = 58;
 	public const CURSOR = 59;
 	public const CREATED_OUTPUT = 60;
+
+	public static function encode(int $containerId, int $protocolId) : ?int{
+		if($protocolId < ProtocolInfo::PROTOCOL_1_19_50){
+			if($containerId > self::RECIPE_BOOK){
+				$containerId--;
+			} elseif($containerId === self::RECIPE_BOOK){
+				return null;
+			}
+		}
+
+		return $containerId;
+	}
+
+	public static function decode(int $containerId, int $protocolId) : ?int{
+		if($protocolId < ProtocolInfo::PROTOCOL_1_19_50 && $containerId >= self::RECIPE_BOOK){
+			$containerId++;
+		}
+
+		return $containerId;
+	}
 }
