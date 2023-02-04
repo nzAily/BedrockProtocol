@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\recipe;
 
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use Ramsey\Uuid\UuidInterface;
 

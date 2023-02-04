@@ -161,16 +161,4 @@ final class EntityMetadataProperties{
 	public const PLAYER_DEATH_POSITION = 127; //blockpos
 	public const PLAYER_DEATH_DIMENSION = 128; //int
 	public const PLAYER_HAS_DIED = 129; //byte
-
-	/**
-	 * @param array<int, MetadataProperty> $types
-	 * @return array<int, MetadataProperty>
-	 */
-	public static function encode(array $types) : array{
-		$properties = [];
-		foreach($types as $type => $val) {
-			$properties[$type] = $val;
-		}
-		return $properties;
-	}
 }

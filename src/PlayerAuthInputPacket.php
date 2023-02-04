@@ -197,7 +197,6 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		}
 		$this->tick = $in->getUnsignedVarLong();
 		$this->delta = $in->getVector3();
-
 		if($this->hasFlag(PlayerAuthInputFlags::PERFORM_ITEM_INTERACTION)){
 			$this->itemInteractionData = ItemInteractionData::read($in);
 		}
@@ -209,7 +208,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 			$max = $in->getVarInt();
 			for($i = 0; $i < $max; ++$i){
 				$actionType = $in->getVarInt();
-				$this->blockActions[] = match (true) {
+				$this->blockActions[] = match(true){
 					PlayerBlockActionWithBlockInfo::isValidActionType($actionType) => PlayerBlockActionWithBlockInfo::read($in, $actionType),
 					$actionType === PlayerAction::STOP_BREAK => new PlayerBlockActionStopBreak(),
 					default => throw new PacketDecodeException("Unexpected block action type $actionType")
@@ -237,7 +236,6 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		}
 		$out->putUnsignedVarLong($this->tick);
 		$out->putVector3($this->delta);
-
 		if($this->itemInteractionData !== null){
 			$this->itemInteractionData->write($out);
 		}

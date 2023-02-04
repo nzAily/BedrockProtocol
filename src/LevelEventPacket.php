@@ -17,7 +17,6 @@ namespace pocketmine\network\mcpe\protocol;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\LevelEvent;
-use pocketmine\network\mcpe\protocol\types\ParticleIds;
 
 class LevelEventPacket extends DataPacket implements ClientboundPacket{
 	public const NETWORK_ID = ProtocolInfo::LEVEL_EVENT_PACKET;

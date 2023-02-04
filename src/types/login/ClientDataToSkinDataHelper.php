@@ -51,58 +51,35 @@ final class ClientDataToSkinDataHelper{
 				),
 				$animation->Type,
 				$animation->Frames,
-				$animation->AnimationExpression ?? 0
+				$animation->AnimationExpression
 			);
-		}
-
-		if(isset($clientData->SkinGeometryDataEngineVersion)){
-			$geometryDataEngineVersion = self::safeB64Decode($clientData->SkinGeometryDataEngineVersion, "SkinGeometryDataEngineVersion"); //yes, they actually base64'd the version!
-		}else{
-			$geometryDataEngineVersion = ProtocolInfo::MINECRAFT_VERSION_NETWORK;
-		}
-
-		$skinData = self::safeB64Decode($clientData->SkinData, "SkinData");
-		if(!isset($clientData->SkinImageHeight) || !isset($clientData->SkinImageWidth)) {
-			$skinImage = SkinImage::fromLegacy($skinData);
-		}else{
-			$skinImage = new SkinImage($clientData->SkinImageHeight, $clientData->SkinImageWidth, $skinData);
-		}
-
-		$capeData = self::safeB64Decode($clientData->CapeData, "CapeData");
-		if($capeData !== "") {
-			if(!isset($clientData->CapeImageHeight) || !isset($clientData->CapeImageWidth)) {
-				$capeImage = SkinImage::fromLegacy($capeData);
-			}else{
-				$capeImage = new SkinImage($clientData->CapeImageHeight, $clientData->CapeImageWidth, $capeData);
-			}
 		}
 
 		return new SkinData(
 			$clientData->SkinId,
-			$clientData->PlayFabId ?? "",
-			isset($clientData->SkinResourcePatch) ? self::safeB64Decode($clientData->SkinResourcePatch, "SkinResourcePatch") : null,
-			$skinImage,
+			$clientData->PlayFabId,
+			self::safeB64Decode($clientData->SkinResourcePatch, "SkinResourcePatch"),
+			new SkinImage($clientData->SkinImageHeight, $clientData->SkinImageWidth, self::safeB64Decode($clientData->SkinData, "SkinData")),
 			$animations,
-			$capeImage ?? new SkinImage(0, 0, ""),
-			self::safeB64Decode($clientData->SkinGeometryData ?? $clientData->SkinGeometry, "SkinGeometryData"),
-			$geometryDataEngineVersion,
-			isset($clientData->SkinAnimationData) ? self::safeB64Decode($clientData->SkinAnimationData, "SkinAnimationData") : "",
-			$clientData->CapeId ?? "",
+			new SkinImage($clientData->CapeImageHeight, $clientData->CapeImageWidth, self::safeB64Decode($clientData->CapeData, "CapeData")),
+			self::safeB64Decode($clientData->SkinGeometryData, "SkinGeometryData"),
+			self::safeB64Decode($clientData->SkinGeometryDataEngineVersion, "SkinGeometryDataEngineVersion"), //yes, they actually base64'd the version!
+			self::safeB64Decode($clientData->SkinAnimationData, "SkinAnimationData"),
+			$clientData->CapeId,
 			null,
-			$clientData->ArmSize ?? "",
-			$clientData->SkinColor ?? "",
+			$clientData->ArmSize,
+			$clientData->SkinColor,
 			array_map(function(ClientDataPersonaSkinPiece $piece) : PersonaSkinPiece{
 				return new PersonaSkinPiece($piece->PieceId, $piece->PieceType, $piece->PackId, $piece->IsDefault, $piece->ProductId);
-			}, $clientData->PersonaPieces ?? []),
+			}, $clientData->PersonaPieces),
 			array_map(function(ClientDataPersonaPieceTintColor $tint) : PersonaPieceTintColor{
 				return new PersonaPieceTintColor($tint->PieceType, $tint->Colors);
-			}, $clientData->PieceTintColors ?? []),
+			}, $clientData->PieceTintColors),
 			true,
 			$clientData->PremiumSkin,
-			$clientData->PersonaSkin ?? false,
-			$clientData->CapeOnClassicSkin ?? false,
+			$clientData->PersonaSkin,
+			$clientData->CapeOnClassicSkin,
 			true, //assume this is true? there's no field for it ...
-			$clientData->SkinGeometryName ?? null,
 		);
 	}
 }

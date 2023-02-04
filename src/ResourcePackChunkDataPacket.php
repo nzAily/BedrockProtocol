@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
-use function strlen;
 
 class ResourcePackChunkDataPacket extends DataPacket implements ClientboundPacket{
 	public const NETWORK_ID = ProtocolInfo::RESOURCE_PACK_CHUNK_DATA_PACKET;

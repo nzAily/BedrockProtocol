@@ -85,7 +85,7 @@ class CraftingDataPacket extends DataPacket implements ClientboundPacket{
 			$ingredientMeta = $in->getVarInt();
 			$outputId = $in->getVarInt();
 			$outputMeta = $in->getVarInt();
-			$this->potionTypeRecipes[] = new PotionTypeRecipe($inputId, $inputMeta ?? 0, $ingredientId, $ingredientMeta ?? 0, $outputId, $outputMeta ?? 0);
+			$this->potionTypeRecipes[] = new PotionTypeRecipe($inputId, $inputMeta, $ingredientId, $ingredientMeta, $outputId, $outputMeta);
 		}
 		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
 			$input = $in->getVarInt();

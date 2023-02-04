@@ -16,9 +16,6 @@ namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\ListTag;
-use pocketmine\nbt\TreeRoot;
-use pocketmine\network\mcpe\protocol\serializer\NetworkNbtSerializer;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\BlockPaletteEntry;
 use pocketmine\network\mcpe\protocol\types\CacheableNbt;
@@ -80,13 +77,11 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 
 	/**
 	 * @generate-create-func
-	 * @param BlockPaletteEntry[]       $blockPalette
-	 * @param LegacyBlockPaletteEntry[] $legacyBlockPalette
-	 * @param ItemTypeEntry[]           $itemTable
-	 * @phpstan-param CacheableNbt<CompoundTag>     $playerActorProperties
-	 * @phpstan-param list<BlockPaletteEntry>       $blockPalette
-	 * @phpstan-param list<LegacyBlockPaletteEntry> $legacyBlockPalette
-	 * @phpstan-param list<ItemTypeEntry>           $itemTable
+	 * @param BlockPaletteEntry[] $blockPalette
+	 * @param ItemTypeEntry[]     $itemTable
+	 * @phpstan-param CacheableNbt<CompoundTag> $playerActorProperties
+	 * @phpstan-param list<BlockPaletteEntry>   $blockPalette
+	 * @phpstan-param list<ItemTypeEntry>       $itemTable
 	 */
 	public static function create(
 		int $actorUniqueId,
@@ -110,7 +105,6 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		UuidInterface $worldTemplateId,
 		bool $enableClientSideChunkGeneration,
 		array $blockPalette,
-		array $legacyBlockPalette,
 		int $blockPaletteChecksum,
 		array $itemTable,
 	) : self{
@@ -136,7 +130,6 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$result->worldTemplateId = $worldTemplateId;
 		$result->enableClientSideChunkGeneration = $enableClientSideChunkGeneration;
 		$result->blockPalette = $blockPalette;
-		$result->legacyBlockPalette = $legacyBlockPalette;
 		$result->blockPaletteChecksum = $blockPaletteChecksum;
 		$result->itemTable = $itemTable;
 		return $result;
@@ -176,7 +169,7 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 			$numericId = $in->getSignedLShort();
 			$isComponentBased = $in->getBool();
 
-			$this->itemTable[] = new ItemTypeEntry($stringId, $numericId, $isComponentBased ?? false);
+			$this->itemTable[] = new ItemTypeEntry($stringId, $numericId, $isComponentBased);
 		}
 
 		$this->multiplayerCorrelationId = $in->getString();
