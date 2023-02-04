@@ -31,23 +31,15 @@ final class PlayerMovementSettings{
 	public function isServerAuthoritativeBlockBreaking() : bool{ return $this->serverAuthoritativeBlockBreaking; }
 
 	public static function read(PacketSerializer $in) : self{
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_100){
-			$movementType = $in->getVarInt();
-			if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_210){
-				$rewindHistorySize = $in->getVarInt();
-				$serverAuthBlockBreaking = $in->getBool();
-			}
-		}else{
-			$movementType = $in->getBool() ? PlayerMovementType::SERVER_AUTHORITATIVE_V1 : PlayerMovementType::LEGACY;
-		}
-		return new self($movementType, $rewindHistorySize ?? 0, $serverAuthBlockBreaking ?? false);
+		$movementType = $in->getVarInt();
+		$rewindHistorySize = $in->getVarInt();
+		$serverAuthBlockBreaking = $in->getBool();
+		return new self($movementType, $rewindHistorySize, $serverAuthBlockBreaking);
 	}
 
 	public function write(PacketSerializer $out) : void{
 		$out->putVarInt($this->movementType);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_210){
-			$out->putVarInt($this->rewindHistorySize);
-			$out->putBool($this->serverAuthoritativeBlockBreaking);
-		}
+		$out->putVarInt($this->rewindHistorySize);
+		$out->putBool($this->serverAuthoritativeBlockBreaking);
 	}
 }

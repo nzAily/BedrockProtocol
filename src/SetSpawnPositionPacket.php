@@ -60,23 +60,15 @@ class SetSpawnPositionPacket extends DataPacket implements ClientboundPacket{
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->spawnType = $in->getVarInt();
 		$this->spawnPosition = $in->getBlockPosition();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_0){
-			$this->dimension = $in->getVarInt();
-			$this->causingBlockPosition = $in->getBlockPosition();
-		}else{
-			$this->spawnForced = $in->getBool();
-		}
+		$this->dimension = $in->getVarInt();
+		$this->causingBlockPosition = $in->getBlockPosition();
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putVarInt($this->spawnType);
 		$out->putBlockPosition($this->spawnPosition);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_0){
-			$out->putVarInt($this->dimension);
-			$out->putBlockPosition($this->causingBlockPosition);
-		}else{
-			$out->putBool($this->spawnForced);
-		}
+		$out->putVarInt($this->dimension);
+		$out->putBlockPosition($this->causingBlockPosition);
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

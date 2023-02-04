@@ -146,73 +146,16 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 			};
 		}
 
-		if($protocolId >= ProtocolInfo::PROTOCOL_1_16_210){
-			return match ($type) {
-				self::ARG_TYPE_TARGET => 0x07,
-				self::ARG_TYPE_WILDCARD_TARGET => 0x08,
-				self::ARG_TYPE_FILEPATH => 0x10,
-				self::ARG_TYPE_STRING => 0x20,
-				self::ARG_TYPE_POSITION => 0x28,
-				self::ARG_TYPE_MESSAGE => 0x2c,
-				self::ARG_TYPE_RAWTEXT => 0x2e,
-				self::ARG_TYPE_JSON => 0x32,
-				self::ARG_TYPE_COMMAND => 0x3f,
-				default => $type,
-			};
-		}
-
-		if($protocolId >= ProtocolInfo::PROTOCOL_1_16_100){
-			return match ($type) {
-				self::ARG_TYPE_FLOAT => 0x02,
-				self::ARG_TYPE_VALUE => 0x03,
-				self::ARG_TYPE_WILDCARD_INT => 0x04,
-				self::ARG_TYPE_OPERATOR => 0x05,
-				self::ARG_TYPE_TARGET => 0x06,
-				self::ARG_TYPE_WILDCARD_TARGET => 0x07,
-				self::ARG_TYPE_FILEPATH => 0x0f,
-				self::ARG_TYPE_STRING => 0x1f,
-				self::ARG_TYPE_POSITION => 0x28,
-				self::ARG_TYPE_MESSAGE => 0x2b,
-				self::ARG_TYPE_RAWTEXT => 0x2d,
-				self::ARG_TYPE_JSON => 0x31,
-				self::ARG_TYPE_COMMAND => 0x38,
-				default => $type,
-			};
-		}
-
-		if($protocolId >= ProtocolInfo::PROTOCOL_1_13_0){
-			return match ($type) {
-				self::ARG_TYPE_FLOAT => 0x02,
-				self::ARG_TYPE_VALUE => 0x03,
-				self::ARG_TYPE_WILDCARD_INT => 0x04,
-				self::ARG_TYPE_OPERATOR => 0x05,
-				self::ARG_TYPE_TARGET => 0x06,
-				self::ARG_TYPE_WILDCARD_TARGET => 0x07,
-				self::ARG_TYPE_FILEPATH => 0x0e,
-				self::ARG_TYPE_STRING => 0x1d,
-				self::ARG_TYPE_POSITION => 0x26,
-				self::ARG_TYPE_MESSAGE => 0x29,
-				self::ARG_TYPE_RAWTEXT => 0x2b,
-				self::ARG_TYPE_JSON => 0x2f,
-				self::ARG_TYPE_COMMAND => 0x36,
-				default => $type,
-			};
-		}
-
 		return match ($type) {
-			self::ARG_TYPE_FLOAT => 0x02,
-			self::ARG_TYPE_VALUE => 0x03,
-			self::ARG_TYPE_WILDCARD_INT => 0x04,
-			self::ARG_TYPE_OPERATOR => 0x05,
-			self::ARG_TYPE_TARGET => 0x06,
-			self::ARG_TYPE_WILDCARD_TARGET => 0x07,
-			self::ARG_TYPE_FILEPATH => 0x0e,
-			self::ARG_TYPE_STRING => 0x1b,
-			self::ARG_TYPE_POSITION => 0x1d,
-			self::ARG_TYPE_MESSAGE => 0x20,
-			self::ARG_TYPE_RAWTEXT => 0x22,
-			self::ARG_TYPE_JSON => 0x25,
-			self::ARG_TYPE_COMMAND => 0x2c,
+			self::ARG_TYPE_TARGET => 0x07,
+			self::ARG_TYPE_WILDCARD_TARGET => 0x08,
+			self::ARG_TYPE_FILEPATH => 0x10,
+			self::ARG_TYPE_STRING => 0x20,
+			self::ARG_TYPE_POSITION => 0x28,
+			self::ARG_TYPE_MESSAGE => 0x2c,
+			self::ARG_TYPE_RAWTEXT => 0x2e,
+			self::ARG_TYPE_JSON => 0x32,
+			self::ARG_TYPE_COMMAND => 0x3f,
 			default => $type,
 		};
 	}
@@ -247,12 +190,10 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 			$this->softEnums[] = $this->getSoftEnum($in);
 		}
 
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_13_0){
-			$this->initSoftEnumsInCommandData();
+		$this->initSoftEnumsInCommandData();
 
-			for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
-				$this->enumConstraints[] = $this->getEnumConstraint($enums, $enumValues, $in);
-			}
+		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
+			$this->enumConstraints[] = $this->getEnumConstraint($enums, $enumValues, $in);
 		}
 	}
 
@@ -419,11 +360,7 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 	protected function getCommandData(array $enums, array $postfixes, PacketSerializer $in) : CommandData{
 		$name = $in->getString();
 		$description = $in->getString();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_10){
-			$flags = $in->getLShort();
-		}else{
-			$flags = $in->getByte();
-		}
+		$flags = $in->getLShort();
 		$permission = $in->getByte();
 		$aliases = $enums[$in->getLInt()] ?? null;
 		$overloads = [];
@@ -468,11 +405,7 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 	protected function putCommandData(CommandData $data, array $enumIndexes, array $softEnumIndexes, array $postfixIndexes, PacketSerializer $out) : void{
 		$out->putString($data->name);
 		$out->putString($data->description);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_10){
-			$out->putLShort($data->flags);
-		}else{
-			$out->putByte($data->flags);
-		}
+		$out->putLShort($data->flags);
 		$out->putByte($data->permission);
 
 		if($data->aliases !== null){
@@ -593,11 +526,9 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 			$this->putSoftEnum($enum, $out);
 		}
 
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_13_0){
-			$out->putUnsignedVarInt(count($this->enumConstraints));
-			foreach($this->enumConstraints as $constraint){
-				$this->putEnumConstraint($constraint, $enumIndexes, $enumValueIndexes, $out);
-			}
+		$out->putUnsignedVarInt(count($this->enumConstraints));
+		foreach($this->enumConstraints as $constraint){
+			$this->putEnumConstraint($constraint, $enumIndexes, $enumValueIndexes, $out);
 		}
 	}
 

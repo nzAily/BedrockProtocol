@@ -44,13 +44,9 @@ final class ItemStackResponseSlotInfo{
 		$hotbarSlot = $in->getByte();
 		$count = $in->getByte();
 		$itemStackId = $in->readGenericTypeNetworkId();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_200){
-			$customName = $in->getString();
-			if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_210){
-				$durabilityCorrection = $in->getVarInt();
-			}
-		}
-		return new self($slot, $hotbarSlot, $count, $itemStackId, $customName ?? "", $durabilityCorrection ?? 0);
+		$customName = $in->getString();
+		$durabilityCorrection = $in->getVarInt();
+		return new self($slot, $hotbarSlot, $count, $itemStackId, $customName, $durabilityCorrection);
 	}
 
 	public function write(PacketSerializer $out) : void{
@@ -58,11 +54,7 @@ final class ItemStackResponseSlotInfo{
 		$out->putByte($this->hotbarSlot);
 		$out->putByte($this->count);
 		$out->writeGenericTypeNetworkId($this->itemStackId);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_200){
-			$out->putString($this->customName);
-			if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_210){
-				$out->putVarInt($this->durabilityCorrection);
-			}
-		}
+		$out->putString($this->customName);
+		$out->putVarInt($this->durabilityCorrection);
 	}
 }

@@ -123,213 +123,137 @@ class PacketSerializer extends BinaryStream{
 	}
 
 	public function getSkin() : SkinData{
-		$skinId = "";
-		$skinResourcePatch = null;
-		$geometryName = "";
-		if($p_1_13_0 = ($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_13_0)){
-			$skinId = $this->getString();
-			if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_210){
-				$skinPlayFabId = $this->getString();
-			}
-			$skinResourcePatch = $this->getString();
-		}
+		$skinId = $this->getString();
+		$skinPlayFabId = $this->getString();
+		$skinResourcePatch = $this->getString();
 		$skinData = $this->getSkinImage();
 		$animations = [];
-		if($p_1_13_0){
-			$animationCount = $this->getLInt();
-			for($i = 0; $i < $animationCount; ++$i){
-				$skinImage = $this->getSkinImage();
-				$animationType = $this->getLInt();
-				$animationFrames = $this->getLFloat();
-				if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_100){
-					$expressionType = $this->getLInt();
-				}
-				$animations[] = new SkinAnimation($skinImage, $animationType, $animationFrames, $expressionType ?? 0);
-			}
-			$capeData = $this->getSkinImage();
-		}else{
-			$capeRawData = $this->getString();
-			if(strlen($capeRawData) !== 0){
-				$capeData = $this->getSkinImage();
-			}
-			$geometryName = $this->getString();
+		$animationCount = $this->getLInt();
+		for($i = 0; $i < $animationCount; ++$i){
+			$skinImage = $this->getSkinImage();
+			$animationType = $this->getLInt();
+			$animationFrames = $this->getLFloat();
+			$expressionType = $this->getLInt();
+			$animations[] = new SkinAnimation($skinImage, $animationType, $animationFrames, $expressionType ?? 0);
 		}
+		$capeData = $this->getSkinImage();
 		$geometryData = $this->getString();
-		if(!$p_1_13_0){
-			return new SkinData(
-				$skinId,
-				"",
-				null,
-				$skinData,
-				capeImage: $capeData ?? new SkinImage(0, 0, ""),
-				geometryData: $geometryData,
-				geometryName: $geometryName,
+		$geometryDataVersion = $this->getString();
+		$animationData = $this->getString();
+		$capeId = $this->getString();
+		$fullSkinId = $this->getString();
+		$armSize = $this->getString();
+		$skinColor = $this->getString();
+		$personaPieceCount = $this->getLInt();
+		$personaPieces = [];
+		for($i = 0; $i < $personaPieceCount; ++$i){
+			$pieceId = $this->getString();
+			$pieceType = $this->getString();
+			$packId = $this->getString();
+			$isDefaultPiece = $this->getBool();
+			$productId = $this->getString();
+			$personaPieces[] = new PersonaSkinPiece($pieceId, $pieceType, $packId, $isDefaultPiece, $productId);
+		}
+		$pieceTintColorCount = $this->getLInt();
+		$pieceTintColors = [];
+		for($i = 0; $i < $pieceTintColorCount; ++$i){
+			$pieceType = $this->getString();
+			$colorCount = $this->getLInt();
+			$colors = [];
+			for($j = 0; $j < $colorCount; ++$j){
+				$colors[] = $this->getString();
+			}
+			$pieceTintColors[] = new PersonaPieceTintColor(
+				$pieceType,
+				$colors
 			);
 		}
 
-		if($p_1_17_30 = ($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30)){
-			$geometryDataVersion = $this->getString();
-		}
-		$animationData = $this->getString();
-		if(!$p_1_17_30){
-			$premium = $this->getBool();
-			$persona = $this->getBool();
-			$capeOnClassic = $this->getBool();
-		}
-		$capeId = $this->getString();
-		$fullSkinId = $this->getString();
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_14_60){
-			$armSize = $this->getString();
-			$skinColor = $this->getString();
-			$personaPieceCount = $this->getLInt();
-			$personaPieces = [];
-			for($i = 0; $i < $personaPieceCount; ++$i){
-				$pieceId = $this->getString();
-				$pieceType = $this->getString();
-				$packId = $this->getString();
-				$isDefaultPiece = $this->getBool();
-				$productId = $this->getString();
-				$personaPieces[] = new PersonaSkinPiece($pieceId, $pieceType, $packId, $isDefaultPiece, $productId);
-			}
-			$pieceTintColorCount = $this->getLInt();
-			$pieceTintColors = [];
-			for($i = 0; $i < $pieceTintColorCount; ++$i){
-				$pieceType = $this->getString();
-				$colorCount = $this->getLInt();
-				$colors = [];
-				for($j = 0; $j < $colorCount; ++$j){
-					$colors[] = $this->getString();
-				}
-				$pieceTintColors[] = new PersonaPieceTintColor(
-					$pieceType,
-					$colors
-				);
-			}
-		}
-
-		if($p_1_17_30){
-			$premium = $this->getBool();
-			$persona = $this->getBool();
-			$capeOnClassic = $this->getBool();
-			$isPrimaryUser = $this->getBool();
-		}
+		$premium = $this->getBool();
+		$persona = $this->getBool();
+		$capeOnClassic = $this->getBool();
+		$isPrimaryUser = $this->getBool();
 
 		return new SkinData(
 			$skinId,
-			$skinPlayFabId ?? "",
+			$skinPlayFabId,
 			$skinResourcePatch,
 			$skinData,
 			$animations,
-			$capeData ?? new SkinImage(0, 0, ""),
+			$capeData,
 			$geometryData,
-			$geometryDataVersion ?? ProtocolInfo::MINECRAFT_VERSION_NETWORK,
+			$geometryDataVersion,
 			$animationData,
 			$capeId,
 			$fullSkinId,
-			$armSize ?? "",
-			$skinColor ?? "",
-			$personaPieces ?? [],
-			$pieceTintColors ?? [],
+			$armSize,
+			$skinColor,
+			$personaPieces,
+			$pieceTintColors,
 			true,
 			$premium,
 			$persona,
 			$capeOnClassic,
-			$isPrimaryUser ?? true,
+			$isPrimaryUser,
 		);
 	}
 
 	public function putSkin(SkinData $skin) : void{
-		if($p_1_13_0 = ($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_13_0)){
-			$this->putString($skin->getSkinId());
-			if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_210){
-				$this->putString($skin->getPlayFabId());
-			}
-			$this->putString($skin->getResourcePatch());
-		}
+		$this->putString($skin->getSkinId());
+		$this->putString($skin->getPlayFabId());
+		$this->putString($skin->getResourcePatch());
 		$this->putSkinImage($skin->getSkinImage());
-		if($p_1_13_0){
-			$this->putLInt(count($skin->getAnimations()));
-			foreach($skin->getAnimations() as $animation){
-				$this->putSkinImage($animation->getImage());
-				$this->putLInt($animation->getType());
-				$this->putLFloat($animation->getFrames());
-				if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_100){
-					$this->putLInt($animation->getExpressionType());
-				}
-			}
+		$this->putLInt(count($skin->getAnimations()));
+		foreach($skin->getAnimations() as $animation){
+			$this->putSkinImage($animation->getImage());
+			$this->putLInt($animation->getType());
+			$this->putLFloat($animation->getFrames());
+			$this->putLInt($animation->getExpressionType());
 		}
 		$this->putSkinImage($skin->getCapeImage());
-		if(!$p_1_13_0){
-			$this->putString($skin->getGeometryName());
-		}
 		$this->putString($skin->getGeometryData());
-		if(!$p_1_13_0){
-			return;
-		}
-		if($p_1_17_30 = ($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_30)){
-			$this->putString($skin->getGeometryDataEngineVersion());
-		}
+		$this->putString($skin->getGeometryDataEngineVersion());
 		$this->putString($skin->getAnimationData());
-		if(!$p_1_17_30){
-			$this->putBool($skin->isPremium());
-			$this->putBool($skin->isPersona());
-			$this->putBool($skin->isPersonaCapeOnClassic());
-		}
 		$this->putString($skin->getCapeId());
 		$this->putString($skin->getFullSkinId());
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_14_60){
-			$this->putString($skin->getArmSize());
-			$this->putString($skin->getSkinColor());
-			$this->putLInt(count($skin->getPersonaPieces()));
-			foreach($skin->getPersonaPieces() as $piece){
-				$this->putString($piece->getPieceId());
-				$this->putString($piece->getPieceType());
-				$this->putString($piece->getPackId());
-				$this->putBool($piece->isDefaultPiece());
-				$this->putString($piece->getProductId());
-			}
-			$this->putLInt(count($skin->getPieceTintColors()));
-			foreach($skin->getPieceTintColors() as $tint){
-				$this->putString($tint->getPieceType());
-				$this->putLInt(count($tint->getColors()));
-				foreach($tint->getColors() as $color){
-					$this->putString($color);
-				}
+		$this->putString($skin->getArmSize());
+		$this->putString($skin->getSkinColor());
+		$this->putLInt(count($skin->getPersonaPieces()));
+		foreach($skin->getPersonaPieces() as $piece){
+			$this->putString($piece->getPieceId());
+			$this->putString($piece->getPieceType());
+			$this->putString($piece->getPackId());
+			$this->putBool($piece->isDefaultPiece());
+			$this->putString($piece->getProductId());
+		}
+		$this->putLInt(count($skin->getPieceTintColors()));
+		foreach($skin->getPieceTintColors() as $tint){
+			$this->putString($tint->getPieceType());
+			$this->putLInt(count($tint->getColors()));
+			foreach($tint->getColors() as $color){
+				$this->putString($color);
 			}
 		}
-		if($p_1_17_30){
-			$this->putBool($skin->isPremium());
-			$this->putBool($skin->isPersona());
-			$this->putBool($skin->isPersonaCapeOnClassic());
-			$this->putBool($skin->isPrimaryUser());
-		}
+		$this->putBool($skin->isPremium());
+		$this->putBool($skin->isPersona());
+		$this->putBool($skin->isPersonaCapeOnClassic());
+		$this->putBool($skin->isPrimaryUser());
 	}
 
 	private function getSkinImage() : SkinImage{
-		if ($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_13_0){
-			$width = $this->getLInt();
-			$height = $this->getLInt();
-			$data = $this->getString();
-			try{
-				return new SkinImage($height, $width, $data);
-			}catch(\InvalidArgumentException $e){
-				throw new PacketDecodeException($e->getMessage(), 0, $e);
-			}
-		}else{
-			$data = $this->getString();
-			try{
-				return SkinImage::fromLegacy($data);
-			}catch(\InvalidArgumentException $e){
-				throw new PacketDecodeException($e->getMessage(), 0, $e);
-			}
+		$width = $this->getLInt();
+		$height = $this->getLInt();
+		$data = $this->getString();
+		try{
+			return new SkinImage($height, $width, $data);
+		}catch(\InvalidArgumentException $e){
+			throw new PacketDecodeException($e->getMessage(), 0, $e);
 		}
 	}
 
 	private function putSkinImage(SkinImage $image) : void{
-		if ($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_13_0){
-			$this->putLInt($image->getWidth());
-			$this->putLInt($image->getHeight());
-		}
+		$this->putLInt($image->getWidth());
+		$this->putLInt($image->getHeight());
 		$this->putString($image->getData());
 	}
 
@@ -361,22 +285,13 @@ class PacketSerializer extends BinaryStream{
 			return ItemStack::null();
 		}
 
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$count = $this->getLShort();
-			$meta = $this->getUnsignedVarInt();
+		$count = $this->getLShort();
+		$meta = $this->getUnsignedVarInt();
 
-			$readExtraCrapInTheMiddle($this);
+		$readExtraCrapInTheMiddle($this);
 
-			$blockRuntimeId = $this->getVarInt();
-			$extraData = self::decoder($this->getString(), 0, $this->context);
-		}else{
-			$auxValue = $this->getVarInt();
-			$count = $auxValue & 0xff;
-			$meta = $auxValue >> 8;
-
-			$blockRuntimeId = 0; // TODO: somehow get a runtime id?
-			$extraData = $this;
-		}
+		$blockRuntimeId = $this->getVarInt();
+		$extraData = self::decoder($this->getString(), 0, $this->context);
 
 		$stack = self::readExtraItemStackData($extraData, $id, $meta, $count, $blockRuntimeId);
 
@@ -390,28 +305,21 @@ class PacketSerializer extends BinaryStream{
 	}
 
 	private static function readExtraItemStackData(PacketSerializer $serializer, int $id, int $meta, int $count, int $blockRuntimeId) : ItemStack{
-		if($serializer->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220) {
-			$getListCount = \Closure::fromCallable([$serializer, "getLInt"]);
-			$getString = \Closure::fromCallable(function() use ($serializer) : string{
-				return $serializer->get($serializer->getLShort());
-			});
-			$getNBT = \Closure::fromCallable(function() use ($serializer) : CompoundTag{
-				$offset = $serializer->getOffset();
-				try{
-					return (new LittleEndianNbtSerializer())->read($serializer->getBuffer(), $offset, 512)->mustGetCompoundTag();
-				}catch(NbtDataException $e){
-					throw PacketDecodeException::wrap($e, "Failed decoding NBT root");
-				}finally{
-					$serializer->setOffset($offset);
-				}
-			});
-			$getBlockingTick = \Closure::fromCallable([$serializer, "getLLong"]);
-		}else{
-			$getListCount = \Closure::fromCallable([$serializer, "getVarInt"]);
-			$getString = \Closure::fromCallable([$serializer, "getString"]);
-			$getNBT = \Closure::fromCallable([$serializer, "getNbtCompoundRoot"]);
-			$getBlockingTick = \Closure::fromCallable([$serializer, "getVarLong"]);
-		}
+		$getListCount = \Closure::fromCallable([$serializer, "getLInt"]);
+		$getString = \Closure::fromCallable(function() use ($serializer) : string{
+			return $serializer->get($serializer->getLShort());
+		});
+		$getNBT = \Closure::fromCallable(function() use ($serializer) : CompoundTag{
+			$offset = $serializer->getOffset();
+			try{
+				return (new LittleEndianNbtSerializer())->read($serializer->getBuffer(), $offset, 512)->mustGetCompoundTag();
+			}catch(NbtDataException $e){
+				throw PacketDecodeException::wrap($e, "Failed decoding NBT root");
+			}finally{
+				$serializer->setOffset($offset);
+			}
+		});
+		$getBlockingTick = \Closure::fromCallable([$serializer, "getLLong"]);
 
 		$nbtLen = $serializer->getLShort();
 
@@ -456,19 +364,16 @@ class PacketSerializer extends BinaryStream{
 
 		$this->putVarInt($item->getId());
 
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220){
-			$this->putLShort($item->getCount());
-			$this->putUnsignedVarInt($item->getMeta());
+		$this->putLShort($item->getCount());
+		$this->putUnsignedVarInt($item->getMeta());
 
-			$writeExtraCrapInTheMiddle($this);
+		$writeExtraCrapInTheMiddle($this);
 
-			$this->putVarInt($item->getBlockRuntimeId());
+		$this->putVarInt($item->getBlockRuntimeId());
 
-			$extraData = PacketSerializer::encoder($this->context);
-			self::putExtraItemStackData($extraData, $item);
-			$this->putString($extraData->getBuffer());
-			return;
-		}
+		$extraData = PacketSerializer::encoder($this->context);
+		self::putExtraItemStackData($extraData, $item);
+		$this->putString($extraData->getBuffer());
 
 		$auxValue = (($item->getMeta() & 0x7fff) << 8) | $item->getCount();
 		$this->putVarInt($auxValue);
@@ -477,20 +382,13 @@ class PacketSerializer extends BinaryStream{
 	}
 
 	private static function putExtraItemStackData(PacketSerializer $serializer, ItemStack $item) : void{
-		if($serializer->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_220) {
-			$putListCount = \Closure::fromCallable([$serializer, "putLInt"]);
-			$putString = \Closure::fromCallable(function(string $str) use ($serializer) : void{
-				$serializer->putLShort(strlen($str));
-				$serializer->put($str);
-			});
-			$putBlockingTick = \Closure::fromCallable([$serializer, "putLLong"]);
-			$nbtSerializerClass = LittleEndianNbtSerializer::class;
-		}else{
-			$putListCount = \Closure::fromCallable([$serializer, "putVarInt"]);
-			$putString = \Closure::fromCallable([$serializer, "putString"]);
-			$putBlockingTick = \Closure::fromCallable([$serializer, "putVarLong"]);
-			$nbtSerializerClass = NetworkNbtSerializer::class;
-		}
+		$putListCount = \Closure::fromCallable([$serializer, "putLInt"]);
+		$putString = \Closure::fromCallable(function(string $str) use ($serializer) : void{
+			$serializer->putLShort(strlen($str));
+			$serializer->put($str);
+		});
+		$putBlockingTick = \Closure::fromCallable([$serializer, "putLLong"]);
+		$nbtSerializerClass = LittleEndianNbtSerializer::class;
 
 		$nbt = $item->getNbt();
 		if($nbt !== null){
@@ -598,7 +496,7 @@ class PacketSerializer extends BinaryStream{
 	 * @phpstan-param array<int, MetadataProperty> $metadata
 	 */
 	public function putEntityMetadata(array $metadata) : void{
-		$data = EntityMetadataProperties::encode($metadata, $this->getProtocolId());
+		$data = EntityMetadataProperties::encode($metadata);
 		$data = EntityMetadataFlags::encode($data, $this->getProtocolId());
 
 		$this->putUnsignedVarInt(count($data));
@@ -797,11 +695,7 @@ class PacketSerializer extends BinaryStream{
 		$rules = [];
 		for($i = 0; $i < $count; ++$i){
 			$name = $this->getString();
-			if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
-				$isPlayerModifiable = $this->getBool();
-			}else{
-				$isPlayerModifiable = false;
-			}
+			$isPlayerModifiable = $this->getBool();
 			$type = $this->getUnsignedVarInt();
 			$rules[$name] = $this->readGameRule($type, $isPlayerModifiable);
 		}
@@ -819,9 +713,7 @@ class PacketSerializer extends BinaryStream{
 		$this->putUnsignedVarInt(count($rules));
 		foreach($rules as $name => $rule){
 			$this->putString($name);
-			if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
-				$this->putBool($rule->isPlayerModifiable());
-			}
+			$this->putBool($rule->isPlayerModifiable());
 			$this->putUnsignedVarInt($rule->getTypeId());
 			$rule->encode($this);
 		}
@@ -835,10 +727,8 @@ class PacketSerializer extends BinaryStream{
 		$toActorUniqueId = $this->getActorUniqueId();
 		$type = $this->getByte();
 		$immediate = $this->getBool();
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_0){
-			$causedByRider = $this->getBool();
-		}
-		return new EntityLink($fromActorUniqueId, $toActorUniqueId, $type, $immediate, $causedByRider ?? false);
+		$causedByRider = $this->getBool();
+		return new EntityLink($fromActorUniqueId, $toActorUniqueId, $type, $immediate, $causedByRider);
 	}
 
 	public function putEntityLink(EntityLink $link) : void{
@@ -846,9 +736,7 @@ class PacketSerializer extends BinaryStream{
 		$this->putActorUniqueId($link->toActorUniqueId);
 		$this->putByte($link->type);
 		$this->putBool($link->immediate);
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_16_0){
-			$this->putBool($link->causedByRider);
-		}
+		$this->putBool($link->causedByRider);
 	}
 
 	/**
@@ -897,15 +785,11 @@ class PacketSerializer extends BinaryStream{
 		$result->lastTouchedByPlayerID = $this->getActorUniqueId();
 		$result->rotation = $this->getByte();
 		$result->mirror = $this->getByte();
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
-			$result->animationMode = $this->getByte();
-			$result->animationSeconds = $this->getLFloat();
-		}
+		$result->animationMode = $this->getByte();
+		$result->animationSeconds = $this->getLFloat();
 		$result->integrityValue = $this->getLFloat();
 		$result->integritySeed = $this->getLInt();
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_13_0){
-			$result->pivot = $this->getVector3();
-		}
+		$result->pivot = $this->getVector3();
 
 		return $result;
 	}
@@ -925,15 +809,11 @@ class PacketSerializer extends BinaryStream{
 		$this->putActorUniqueId($structureSettings->lastTouchedByPlayerID);
 		$this->putByte($structureSettings->rotation);
 		$this->putByte($structureSettings->mirror);
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_17_0){
-			$this->putByte($structureSettings->animationMode);
-			$this->putLFloat($structureSettings->animationSeconds);
-		}
+		$this->putByte($structureSettings->animationMode);
+		$this->putLFloat($structureSettings->animationSeconds);
 		$this->putLFloat($structureSettings->integrityValue);
 		$this->putLInt($structureSettings->integritySeed);
-		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_13_0){
-			$this->putVector3($structureSettings->pivot);
-		}
+		$this->putVector3($structureSettings->pivot);
 	}
 
 	public function getStructureEditorData(int $protocolId) : StructureEditorData{

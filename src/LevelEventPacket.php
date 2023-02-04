@@ -38,11 +38,7 @@ class LevelEventPacket extends DataPacket implements ClientboundPacket{
 		return $result;
 	}
 
-	public static function standardParticle(int $particleId, int $data, Vector3 $position, int $protocolId) : self{
-		if($protocolId <= ProtocolInfo::PROTOCOL_1_17_0 && $particleId >= ParticleIds::CANDLE_FLAME){
-			--$particleId;
-		}
-
+	public static function standardParticle(int $particleId, int $data, Vector3 $position) : self{
 		return self::create(LevelEvent::ADD_PARTICLE_MASK | $particleId, $data, $position);
 	}
 
