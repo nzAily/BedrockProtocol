@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\entity;
 
-
 final class EntityMetadataProperties{
 
 	private function __construct(){
