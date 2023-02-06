@@ -81,9 +81,6 @@ final class ItemStackRequest{
 		$actions = [];
 		for($i = 0, $len = $in->getUnsignedVarInt(); $i < $len; ++$i){
 			$typeId = $in->getByte();
-			if($typeId >= ItemStackRequestActionType::PLACE_INTO_BUNDLE && $in->getProtocolId() < ProtocolInfo::PROTOCOL_1_18_10){
-				$typeId += ItemStackRequestActionType::LAB_TABLE_COMBINE - ItemStackRequestActionType::PLACE_INTO_BUNDLE;
-			}
 			$actions[] = self::readAction($in, $typeId);
 		}
 		$filterStrings = [];
@@ -101,9 +98,6 @@ final class ItemStackRequest{
 		$out->putUnsignedVarInt(count($this->actions));
 		foreach($this->actions as $action){
 			$typeId = $action->getTypeId();
-			if($typeId >= ItemStackRequestActionType::PLACE_INTO_BUNDLE && $out->getProtocolId() < ProtocolInfo::PROTOCOL_1_18_10){
-				$typeId -= ItemStackRequestActionType::LAB_TABLE_COMBINE - ItemStackRequestActionType::PLACE_INTO_BUNDLE;
-			}
 			$out->putByte($typeId);
 			$action->write($out);
 		}

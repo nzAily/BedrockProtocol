@@ -30,16 +30,13 @@ final class SubChunkPacketEntryWithCache{
 
 	public static function read(PacketSerializer $in) : self{
 		$base = SubChunkPacketEntryCommon::read($in, true);
-		$usedBlobHash = ($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_10 || $in->getBool()) ? $in->getLLong() : -1;
+		$usedBlobHash = $in->getLLong();
 
 		return new self($base, $usedBlobHash);
 	}
 
 	public function write(PacketSerializer $out) : void{
 		$this->base->write($out, true);
-		if($out->getProtocolId() === ProtocolInfo::PROTOCOL_1_18_0){
-			$out->putBool(true);
-		}
 		$out->putLLong($this->usedBlobHash);
 	}
 }
