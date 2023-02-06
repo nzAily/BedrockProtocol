@@ -53,7 +53,6 @@ final class ClientDataToSkinDataHelper{
 				$animation->AnimationExpression
 			);
 		}
-
 		return new SkinData(
 			$clientData->SkinId,
 			$clientData->PlayFabId,

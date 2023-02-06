@@ -97,8 +97,7 @@ final class ItemStackRequest{
 		$out->writeGenericTypeNetworkId($this->requestId);
 		$out->putUnsignedVarInt(count($this->actions));
 		foreach($this->actions as $action){
-			$typeId = $action->getTypeId();
-			$out->putByte($typeId);
+			$out->putByte($action->getTypeId());
 			$action->write($out);
 		}
 		$out->putUnsignedVarInt(count($this->filterStrings));

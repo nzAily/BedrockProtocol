@@ -50,7 +50,7 @@ class SetSpawnPositionPacket extends DataPacket implements ClientboundPacket{
 		return self::create(self::TYPE_PLAYER_SPAWN, $spawnPosition, $dimension, $causingBlockPosition);
 	}
 
-	public static function worldSpawn(BlockPosition $spawnPosition, int $dimension, bool $spawnForced = false) : self{
+	public static function worldSpawn(BlockPosition $spawnPosition, int $dimension) : self{
 		return self::create(self::TYPE_WORLD_SPAWN, $spawnPosition, $dimension, new BlockPosition(Limits::INT32_MIN, Limits::INT32_MIN, Limits::INT32_MIN));
 	}
 
