@@ -153,7 +153,7 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 		$out->putUUID($this->uuid);
 		$out->putString($this->username);
 		if($out->getProtocolId() <= ProtocolInfo::PROTOCOL_1_19_0){
-			$out->putActorUniqueId($this->abilitiesPacket->getTargetActorUniqueId());
+			$out->putActorUniqueId($this->abilitiesPacket->getData()->getTargetActorUniqueId());
 		}
 		$out->putActorRuntimeId($this->actorRuntimeId);
 		$out->putString($this->platformChatId);
