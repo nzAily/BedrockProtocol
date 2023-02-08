@@ -63,6 +63,7 @@ final class LevelSettings{
 	public bool $onlySpawnV1Villagers = false;
 	public bool $disablePersona = false;
 	public bool $disableCustomSkins = false;
+	public bool $muteEmoteAnnouncements = false;
 	public string $vanillaVersion = ProtocolInfo::MINECRAFT_VERSION_NETWORK;
 	public int $limitedWorldWidth = 0;
 	public int $limitedWorldLength = 0;
