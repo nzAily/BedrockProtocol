@@ -176,11 +176,11 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 		}else{
 			$packet = AdventureSettingsPacket::create(
 				0,
-				$this->abilitiesPacket->getCommandPermission(),
+				$this->abilitiesPacket->getData()->getCommandPermission(),
 				0,
-				$this->abilitiesPacket->getPlayerPermission(),
+				$this->abilitiesPacket->getData()->getPlayerPermission(),
 				0,
-				$this->abilitiesPacket->getTargetActorUniqueId()
+				$this->abilitiesPacket->getData()->getTargetActorUniqueId()
 			);
 			$packet->encodePayload($out);
 		}
