@@ -16,6 +16,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
+use pocketmine\network\mcpe\protocol\types\AbilitiesData;
 use pocketmine\network\mcpe\protocol\types\DeviceOS;
 use pocketmine\network\mcpe\protocol\types\entity\EntityLink;
 use pocketmine\network\mcpe\protocol\types\entity\MetadataProperty;
@@ -127,12 +128,14 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 			$packet = new AdventureSettingsPacket();
 			$packet->decodePayload($in);
 
-			$this->abilitiesPacket = UpdateAbilitiesPacket::create(
+			$abilityData = new AbilitiesData(
 				$packet->commandPermission,
 				$packet->playerPermission,
 				$packet->targetActorUniqueId,
 				[]
 			);
+
+			$this->abilitiesPacket = UpdateAbilitiesPacket::create($abilityData);
 		}
 
 		$linkCount = $in->getUnsignedVarInt();
