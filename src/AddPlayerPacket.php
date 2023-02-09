@@ -16,6 +16,7 @@ namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
+use pocketmine\network\mcpe\protocol\types\AbilitiesData;
 use pocketmine\network\mcpe\protocol\types\DeviceOS;
 use pocketmine\network\mcpe\protocol\types\entity\EntityLink;
 use pocketmine\network\mcpe\protocol\types\entity\MetadataProperty;
@@ -127,12 +128,14 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 			$packet = new AdventureSettingsPacket();
 			$packet->decodePayload($in);
 
-			$this->abilitiesPacket = UpdateAbilitiesPacket::create(
+			$abilityData = new AbilitiesData(
 				$packet->commandPermission,
 				$packet->playerPermission,
 				$packet->targetActorUniqueId,
 				[]
 			);
+
+			$this->abilitiesPacket = UpdateAbilitiesPacket::create($abilityData);
 		}
 
 		$linkCount = $in->getUnsignedVarInt();
@@ -148,7 +151,7 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 		$out->putUUID($this->uuid);
 		$out->putString($this->username);
 		if($out->getProtocolId() <= ProtocolInfo::PROTOCOL_1_19_0){
-			$out->putActorUniqueId($this->abilitiesPacket->getTargetActorUniqueId());
+			$out->putActorUniqueId($this->abilitiesPacket->getData()->getTargetActorUniqueId());
 		}
 		$out->putActorRuntimeId($this->actorRuntimeId);
 		$out->putString($this->platformChatId);
@@ -171,11 +174,11 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 		}else{
 			$packet = AdventureSettingsPacket::create(
 				0,
-				$this->abilitiesPacket->getCommandPermission(),
+				$this->abilitiesPacket->getData()->getCommandPermission(),
 				0,
-				$this->abilitiesPacket->getPlayerPermission(),
+				$this->abilitiesPacket->getData()->getPlayerPermission(),
 				0,
-				$this->abilitiesPacket->getTargetActorUniqueId()
+				$this->abilitiesPacket->getData()->getTargetActorUniqueId()
 			);
 			$packet->encodePayload($out);
 		}
