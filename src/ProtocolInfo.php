@@ -66,6 +66,7 @@ final class ProtocolInfo{
 	/** Version number sent to clients in ping responses. */
 	public const MINECRAFT_VERSION_NETWORK = '1.19.62';
 
+	public const PROTOCOL_1_19_62 = 568; // This is actually 567, but with the emergency patch applied
 	public const PROTOCOL_1_19_60 = 567;
 	public const PROTOCOL_1_19_50 = 560;
 	public const PROTOCOL_1_19_40 = 557;
