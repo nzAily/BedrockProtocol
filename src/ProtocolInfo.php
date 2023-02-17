@@ -62,9 +62,9 @@ final class ProtocolInfo{
 	];
 
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
-	public const MINECRAFT_VERSION = 'v1.19.60';
+	public const MINECRAFT_VERSION = 'v1.19.62';
 	/** Version number sent to clients in ping responses. */
-	public const MINECRAFT_VERSION_NETWORK = '1.19.60';
+	public const MINECRAFT_VERSION_NETWORK = '1.19.62';
 
 	public const PROTOCOL_1_19_60 = 567;
 	public const PROTOCOL_1_19_50 = 560;

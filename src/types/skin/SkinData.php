@@ -55,6 +55,7 @@ class SkinData{
 		private bool $persona = false,
 		private bool $personaCapeOnClassic = false,
 		private bool $isPrimaryUser = true,
+		private bool $override = true,
 		?string $geometryName = null
 	){
 		$this->geometryName = $geometryName ?? "geometry.humanoid.custom";
@@ -142,6 +143,8 @@ class SkinData{
 	}
 
 	public function isPrimaryUser() : bool{ return $this->isPrimaryUser; }
+
+	public function isOverride() : bool{ return $this->override; }
 
 	public function isVerified() : bool{
 		return $this->isVerified;
