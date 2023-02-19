@@ -67,26 +67,23 @@ use function substr;
 
 class PacketSerializer extends BinaryStream{
 
-	private ?int $protocolId = null;
+	private int $protocolId;
 	private int $shieldItemRuntimeId;
 	private PacketSerializerContext $context;
 
-	protected function __construct(PacketSerializerContext $context, string $buffer = "", int $offset = 0){
+	protected function __construct(PacketSerializerContext $context, int $protocolId, string $buffer = "", int $offset = 0){
 		parent::__construct($buffer, $offset);
 		$this->context = $context;
+		$this->protocolId = $protocolId;
 		$this->shieldItemRuntimeId = $context->getItemDictionary()->fromStringId("minecraft:shield");
 	}
 
-	public static function encoder(PacketSerializerContext $context) : self{
-		return new self($context);
+	public static function encoder(PacketSerializerContext $context, int $protocolId = ProtocolInfo::CURRENT_PROTOCOL) : self{
+		return new self($context, $protocolId);
 	}
 
-	public static function decoder(string $buffer, int $offset, PacketSerializerContext $context) : self{
-		return new self($context, $buffer, $offset);
-	}
-
-	public function setProtocolId(?int $protocolId) : void{
-		$this->protocolId = $protocolId;
+	public static function decoder(string $buffer, int $offset, PacketSerializerContext $context, int $protocolId = ProtocolInfo::CURRENT_PROTOCOL) : self{
+		return new self($context, $protocolId, $buffer, $offset);
 	}
 
 	public function getProtocolId() : int{
@@ -297,7 +294,7 @@ class PacketSerializer extends BinaryStream{
 		$readExtraCrapInTheMiddle($this);
 
 		$blockRuntimeId = $this->getVarInt();
-		$extraData = self::decoder($this->getString(), 0, $this->context);
+		$extraData = self::decoder($this->getString(), 0, $this->context, $this->getProtocolId());
 		return (static function() use ($extraData, $id, $meta, $count, $blockRuntimeId) : ItemStack{
 			$nbtLen = $extraData->getLShort();
 
@@ -361,8 +358,8 @@ class PacketSerializer extends BinaryStream{
 
 		$this->putVarInt($item->getBlockRuntimeId());
 		$context = $this->context;
-		$this->putString((static function() use ($item, $context) : string{
-			$extraData = PacketSerializer::encoder($context);
+		$this->putString((function() use ($item, $context) : string{
+			$extraData = PacketSerializer::encoder($context, $this->getProtocolId());
 
 			$nbt = $item->getNbt();
 			if($nbt !== null){
