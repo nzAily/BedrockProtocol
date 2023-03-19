@@ -56,13 +56,13 @@ class PacketBatch{
 	 * @phpstan-return \Generator<int, Packet, void, void>
 	 * @throws PacketDecodeException
 	 */
-	final public static function decodePackets(int $protocolId, BinaryStream $stream, PacketSerializerContext $context, PacketPool $packetPool) : \Generator{
+	final public static function decodePackets(BinaryStream $stream, PacketSerializerContext $context, PacketPool $packetPool) : \Generator{
 		$c = 0;
 		foreach(self::decodeRaw($stream) as $packetBuffer){
 			$packet = $packetPool->getPacket($packetBuffer);
 			if($packet !== null){
 				try{
-					$packet->decode(PacketSerializer::decoder($packetBuffer, 0, $context, $protocolId));
+					$packet->decode(PacketSerializer::decoder($packetBuffer, 0, $context));
 				}catch(PacketDecodeException $e){
 					throw new PacketDecodeException("Error decoding packet $c in batch: " . $e->getMessage(), 0, $e);
 				}
@@ -78,9 +78,9 @@ class PacketBatch{
 	 * @param Packet[]       $packets
 	 * @phpstan-param list<Packet> $packets
 	 */
-	final public static function encodePackets(int $protocolId, BinaryStream $stream, PacketSerializerContext $context, array $packets) : void{
+	final public static function encodePackets(BinaryStream $stream, PacketSerializerContext $context, array $packets) : void{
 		foreach($packets as $packet){
-			$serializer = PacketSerializer::encoder($context, $protocolId);
+			$serializer = PacketSerializer::encoder($context);
 			$packet->encode($serializer);
 			$stream->putUnsignedVarInt(strlen($serializer->getBuffer()));
 			$stream->put($serializer->getBuffer());
@@ -119,10 +119,10 @@ class PacketBatch{
 	 * @deprecated
 	 * Constructs a packet batch from the given list of packets.
 	 */
-	public static function fromPackets(int $protocolId, PacketSerializerContext $context, Packet ...$packets) : self{
+	public static function fromPackets(PacketSerializerContext $context, Packet ...$packets) : self{
 		$stream = new BinaryStream();
 		// @phpstan-ignore-next-line
-		self::encodePackets($protocolId, $stream, $context, $packets);
+		self::encodePackets($stream, $context, $packets);
 		return new self($stream->getBuffer());
 	}
 
