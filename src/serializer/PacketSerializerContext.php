@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\serializer;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
+
 /**
  * Contains information for a packet serializer specific to a given game session needed for packet encoding and decoding,
  * such as a dictionary of item runtime IDs to their internal string IDs.
@@ -21,7 +23,7 @@ namespace pocketmine\network\mcpe\protocol\serializer;
 final class PacketSerializerContext{
 	public function __construct(
 		private ItemTypeDictionary $itemDictionary,
-		private int $protocolId
+		private int $protocolId = ProtocolInfo::CURRENT_PROTOCOL
 	){}
 
 	public function getItemDictionary() : ItemTypeDictionary{ return $this->itemDictionary; }

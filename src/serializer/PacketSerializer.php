@@ -86,7 +86,7 @@ class PacketSerializer extends BinaryStream{
 	}
 
 	public function getProtocolId() : int{
-		return $this->context->getProtocolId() ?? ProtocolInfo::CURRENT_PROTOCOL;
+		return $this->context->getProtocolId();
 	}
 
 	/**
