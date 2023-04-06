@@ -97,7 +97,7 @@ final class ContainerUIIds{
 		$out->putByte($containerId);
 	}
 
-	public static function read(PacketSerializer $in) : ?int{
+	public static function read(PacketSerializer $in) : int{
 		$containerId = $in->getByte();
 
 		if($in->getProtocolId() < ProtocolInfo::PROTOCOL_1_19_50 && $containerId >= self::RECIPE_BOOK){
