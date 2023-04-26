@@ -46,7 +46,7 @@ final class ClientData{
 	/** @required */
 	public int $ClientRandomId;
 
-	/** @required */
+	/** >= PROTOCOL_1_19_80 */
 	public bool $CompatibleWithClientSideChunkGen;
 
 	/** @required */
