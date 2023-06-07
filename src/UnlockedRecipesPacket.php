@@ -20,7 +20,13 @@ use function count;
 class UnlockedRecipesPacket extends DataPacket implements ClientboundPacket{
 	public const NETWORK_ID = ProtocolInfo::UNLOCKED_RECIPES_PACKET;
 
-	private bool $newRecipes;
+	public const TYPE_EMPTY = 0;
+	public const TYPE_INITIALLY_UNLOCKED = 1;
+	public const TYPE_NEWLY_UNLOCKED = 2;
+	public const TYPE_REMOVE = 3;
+	public const TYPE_REMOVE_ALL = 4;
+
+	private int $type;
 	/** @var string[] */
 	private array $recipes;
 
@@ -28,14 +34,14 @@ class UnlockedRecipesPacket extends DataPacket implements ClientboundPacket{
 	 * @generate-create-func
 	 * @param string[] $recipes
 	 */
-	public static function create(bool $newRecipes, array $recipes) : self{
+	public static function create(int $type, array $recipes) : self{
 		$result = new self;
-		$result->newRecipes = $newRecipes;
+		$result->type = $type;
 		$result->recipes = $recipes;
 		return $result;
 	}
 
-	public function isNewRecipes() : bool{ return $this->newRecipes; }
+	public function getType() : int{ return $this->type; }
 
 	/**
 	 * @return string[]
@@ -43,7 +49,11 @@ class UnlockedRecipesPacket extends DataPacket implements ClientboundPacket{
 	public function getRecipes() : array{ return $this->recipes; }
 
 	protected function decodePayload(PacketSerializer $in) : void{
-		$this->newRecipes = $in->getBool();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_0){
+			$this->type = $in->getLInt();
+		}else{
+			$this->type = $in->getBool() ? self::TYPE_NEWLY_UNLOCKED : self::TYPE_REMOVE;
+		}
 		$this->recipes = [];
 		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; $i++){
 			$this->recipes[] = $in->getString();
@@ -51,7 +61,11 @@ class UnlockedRecipesPacket extends DataPacket implements ClientboundPacket{
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
-		$out->putBool($this->newRecipes);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_0){
+			$out->putLInt($this->type);
+		}else{
+			$out->putBool($this->type === self::TYPE_NEWLY_UNLOCKED);
+		}
 		$out->putUnsignedVarInt(count($this->recipes));
 		foreach($this->recipes as $recipe){
 			$out->putString($recipe);
