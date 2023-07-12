@@ -422,7 +422,7 @@ class PacketSerializer extends BinaryStream{
 				$this->putVarInt($ingredient->getCount());
 			}
 		}else{
-			$this->putVarInt(0);
+			throw new \InvalidArgumentException("Unsupported item descriptor type " . get_class($type));
 		}
 	}
 
