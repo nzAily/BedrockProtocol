@@ -136,6 +136,7 @@ final class EntityMetadataFlags{
 	public const RISING = 111;
 	public const HAPPY = 112;
 	public const SEARCHING = 113;
+	public const CRAWLING = 114;
 
 	/**
 	 * Rewrites the MetadataFlags from the latest protocol version to the given protocol version.

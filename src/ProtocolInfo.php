@@ -32,7 +32,7 @@ final class ProtocolInfo{
 	 */
 
 	/** Actual Minecraft: PE protocol version */
-	public const CURRENT_PROTOCOL = self::PROTOCOL_1_20_0;
+	public const CURRENT_PROTOCOL = self::PROTOCOL_1_20_10;
 	public const ACCEPTED_PROTOCOL = [
 		self::PROTOCOL_1_18_10,
 		self::PROTOCOL_1_18_30,
@@ -47,14 +47,16 @@ final class ProtocolInfo{
 		self::PROTOCOL_1_19_63,
 		self::PROTOCOL_1_19_70,
 		self::PROTOCOL_1_19_80,
+		self::PROTOCOL_1_20_0,
 		self::CURRENT_PROTOCOL
 	];
 
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
-	public const MINECRAFT_VERSION = 'v1.20.0';
+	public const MINECRAFT_VERSION = 'v1.20.10';
 	/** Version number sent to clients in ping responses. */
-	public const MINECRAFT_VERSION_NETWORK = '1.20.0';
+	public const MINECRAFT_VERSION_NETWORK = '1.20.10';
 
+	public const PROTOCOL_1_20_10 = 594;
 	public const PROTOCOL_1_20_0 = 589;
 	public const PROTOCOL_1_19_80 = 582;
 	public const PROTOCOL_1_19_70 = 575;
@@ -134,7 +136,7 @@ final class ProtocolInfo{
 	public const SET_PLAYER_GAME_TYPE_PACKET = 0x3e;
 	public const PLAYER_LIST_PACKET = 0x3f;
 	public const SIMPLE_EVENT_PACKET = 0x40;
-	public const EVENT_PACKET = 0x41;
+	public const LEGACY_TELEMETRY_EVENT_PACKET = 0x41;
 	public const SPAWN_EXPERIENCE_ORB_PACKET = 0x42;
 	public const CLIENTBOUND_MAP_ITEM_DATA_PACKET = 0x43;
 	public const MAP_INFO_REQUEST_PACKET = 0x44;
@@ -186,7 +188,6 @@ final class ProtocolInfo{
 	public const UPDATE_SOFT_ENUM_PACKET = 0x72;
 	public const NETWORK_STACK_LATENCY_PACKET = 0x73;
 
-	public const SCRIPT_CUSTOM_EVENT_PACKET = 0x75;
 	public const SPAWN_PARTICLE_EFFECT_PACKET = 0x76;
 	public const AVAILABLE_ACTOR_IDENTIFIERS_PACKET = 0x77;
 	public const LEVEL_SOUND_EVENT_PACKET_V2 = 0x78;
@@ -266,7 +267,7 @@ final class ProtocolInfo{
 	public const GAME_TEST_REQUEST_PACKET = 0xc2;
 	public const GAME_TEST_RESULTS_PACKET = 0xc3;
 	public const UPDATE_CLIENT_INPUT_LOCKS_PACKET = 0xc4;
-	public const CLIENT_CHEAT_ABILITY_PACKET = 0xc5;
+
 	public const CAMERA_PRESETS_PACKET = 0xc6;
 	public const UNLOCKED_RECIPES_PACKET = 0xc7;
 
@@ -274,5 +275,6 @@ final class ProtocolInfo{
 	public const COMPRESSED_BIOME_DEFINITION_LIST_PACKET = 0x12d;
 	public const TRIM_DATA_PACKET = 0x12e;
 	public const OPEN_SIGN_PACKET = 0x12f;
+	public const AGENT_ANIMATION_PACKET = 0x130;
 
 }
