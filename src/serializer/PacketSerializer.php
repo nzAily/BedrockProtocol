@@ -62,7 +62,6 @@ use pocketmine\utils\BinaryStream;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use function count;
-use function get_class;
 use function strlen;
 use function strrev;
 use function substr;
