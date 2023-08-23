@@ -92,24 +92,16 @@ final class LevelSettings{
 	 * @throws PacketDecodeException
 	 */
 	private function internalRead(PacketSerializer $in) : void{
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_30){
-			$this->seed = $in->getLLong();
-		}else{
-			$this->seed = $in->getVarInt();
-		}
+		$this->seed = $in->getLLong();
 		$this->spawnSettings = SpawnSettings::read($in);
 		$this->generator = $in->getVarInt();
 		$this->worldGamemode = $in->getVarInt();
 		$this->difficulty = $in->getVarInt();
 		$this->spawnPosition = $in->getBlockPosition();
 		$this->hasAchievementsDisabled = $in->getBool();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_10){
-			$this->isEditorMode = $in->getBool();
-		}
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_80){
-			$this->createdInEditorMode = $in->getBool();
-			$this->exportedFromEditorMode = $in->getBool();
-		}
+		$this->isEditorMode = $in->getBool();
+		$this->createdInEditorMode = $in->getBool();
+		$this->exportedFromEditorMode = $in->getBool();
 		$this->time = $in->getVarInt();
 		$this->eduEditionOffer = $in->getVarInt();
 		$this->hasEduFeaturesEnabled = $in->getBool();
@@ -136,44 +128,30 @@ final class LevelSettings{
 		$this->isFromWorldTemplate = $in->getBool();
 		$this->isWorldTemplateOptionLocked = $in->getBool();
 		$this->onlySpawnV1Villagers = $in->getBool();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
-			$this->disablePersona = $in->getBool();
-			$this->disableCustomSkins = $in->getBool();
-			if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_60){
-				$this->muteEmoteAnnouncements = $in->getBool();
-			}
-		}
+		$this->disablePersona = $in->getBool();
+		$this->disableCustomSkins = $in->getBool();
+		$this->muteEmoteAnnouncements = $in->getBool();
 		$this->vanillaVersion = $in->getString();
 		$this->limitedWorldWidth = $in->getLInt();
 		$this->limitedWorldLength = $in->getLInt();
 		$this->isNewNether = $in->getBool();
 		$this->eduSharedUriResource = EducationUriResource::read($in);
 		$this->experimentalGameplayOverride = $in->readOptional(\Closure::fromCallable([$in, 'getBool']));
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
-			$this->chatRestrictionLevel = $in->getByte();
-			$this->disablePlayerInteractions = $in->getBool();
-		}
+		$this->chatRestrictionLevel = $in->getByte();
+		$this->disablePlayerInteractions = $in->getBool();
 	}
 
 	public function write(PacketSerializer $out) : void{
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_30){
-			$out->putLLong($this->seed);
-		}else{
-			$out->putVarInt($this->seed);
-		}
+		$out->putLLong($this->seed);
 		$this->spawnSettings->write($out);
 		$out->putVarInt($this->generator);
 		$out->putVarInt($this->worldGamemode);
 		$out->putVarInt($this->difficulty);
 		$out->putBlockPosition($this->spawnPosition);
 		$out->putBool($this->hasAchievementsDisabled);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_10){
-			$out->putBool($this->isEditorMode);
-		}
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_80){
-			$out->putBool($this->createdInEditorMode);
-			$out->putBool($this->exportedFromEditorMode);
-		}
+		$out->putBool($this->isEditorMode);
+		$out->putBool($this->createdInEditorMode);
+		$out->putBool($this->exportedFromEditorMode);
 		$out->putVarInt($this->time);
 		$out->putVarInt($this->eduEditionOffer);
 		$out->putBool($this->hasEduFeaturesEnabled);
@@ -200,22 +178,16 @@ final class LevelSettings{
 		$out->putBool($this->isFromWorldTemplate);
 		$out->putBool($this->isWorldTemplateOptionLocked);
 		$out->putBool($this->onlySpawnV1Villagers);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
-			$out->putBool($this->disablePersona);
-			$out->putBool($this->disableCustomSkins);
-			if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_60){
-				$out->putBool($this->muteEmoteAnnouncements);
-			}
-		}
+		$out->putBool($this->disablePersona);
+		$out->putBool($this->disableCustomSkins);
+		$out->putBool($this->muteEmoteAnnouncements);
 		$out->putString($this->vanillaVersion);
 		$out->putLInt($this->limitedWorldWidth);
 		$out->putLInt($this->limitedWorldLength);
 		$out->putBool($this->isNewNether);
 		($this->eduSharedUriResource ?? new EducationUriResource("", ""))->write($out);
 		$out->writeOptional($this->experimentalGameplayOverride, \Closure::fromCallable([$out, 'putBool']));
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
-			$out->putByte($this->chatRestrictionLevel);
-			$out->putBool($this->disablePlayerInteractions);
-		}
+		$out->putByte($this->chatRestrictionLevel);
+		$out->putBool($this->disablePlayerInteractions);
 	}
 }

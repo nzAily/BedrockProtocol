@@ -48,27 +48,15 @@ class ModalFormResponsePacket extends DataPacket implements ServerboundPacket{
 
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->formId = $in->getUnsignedVarInt();
-
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
-			$this->formData = $in->readOptional(\Closure::fromCallable([$in, 'getString']));
-			$this->cancelReason = $in->readOptional(\Closure::fromCallable([$in, 'getByte']));
-		}else{
-			$this->formData = $in->getString();
-			$this->cancelReason = null;
-		}
+		$this->formData = $in->readOptional(\Closure::fromCallable([$in, 'getString']));
+		$this->cancelReason = $in->readOptional(\Closure::fromCallable([$in, 'getByte']));
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putUnsignedVarInt($this->formId);
 
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_20){
-			$out->writeOptional($this->formData, \Closure::fromCallable([$out, 'putString']));
-			$out->writeOptional($this->cancelReason, \Closure::fromCallable([$out, 'putByte']));
-		}elseif($this->formData !== null){
-			$out->putString($this->formData);
-		}else{
-			throw new \InvalidArgumentException("Cancel reason is only available on protocol 1.19.20+");
-		}
+		$out->writeOptional($this->formData, \Closure::fromCallable([$out, 'putString']));
+		$out->writeOptional($this->cancelReason, \Closure::fromCallable([$out, 'putByte']));
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

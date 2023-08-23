@@ -94,9 +94,7 @@ class AddActorPacket extends DataPacket implements ClientboundPacket{
 		$this->pitch = $in->getLFloat();
 		$this->yaw = $in->getLFloat();
 		$this->headYaw = $in->getLFloat();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_10){
-			$this->bodyYaw = $in->getLFloat();
-		}
+		$this->bodyYaw = $in->getLFloat();
 
 		$attrCount = $in->getUnsignedVarInt();
 		for($i = 0; $i < $attrCount; ++$i){
@@ -108,9 +106,7 @@ class AddActorPacket extends DataPacket implements ClientboundPacket{
 		}
 
 		$this->metadata = $in->getEntityMetadata(); // TODO: convert back?
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_40){
-			$this->syncedProperties = PropertySyncData::read($in);
-		}
+		$this->syncedProperties = PropertySyncData::read($in);
 
 		$linkCount = $in->getUnsignedVarInt();
 		for($i = 0; $i < $linkCount; ++$i){
@@ -127,9 +123,7 @@ class AddActorPacket extends DataPacket implements ClientboundPacket{
 		$out->putLFloat($this->pitch);
 		$out->putLFloat($this->yaw);
 		$out->putLFloat($this->headYaw);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_10){
-			$out->putLFloat($this->bodyYaw);
-		}
+		$out->putLFloat($this->bodyYaw);
 
 		$out->putUnsignedVarInt(count($this->attributes));
 		foreach($this->attributes as $attribute){
@@ -140,9 +134,7 @@ class AddActorPacket extends DataPacket implements ClientboundPacket{
 		}
 
 		$out->putEntityMetadata($this->metadata);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_40){
-			$this->syncedProperties->write($out);
-		}
+		$this->syncedProperties->write($out);
 
 		$out->putUnsignedVarInt(count($this->links));
 		foreach($this->links as $link){

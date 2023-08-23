@@ -37,11 +37,9 @@ final class IntIdMetaItemDescriptor implements ItemDescriptor{
 	public function getMeta() : int{ return $this->meta; }
 
 	public static function read(PacketSerializer $in) : self{
-		$newFormat = $in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_30;
-
-		$id = $newFormat ? $in->getSignedLShort() : $in->getVarInt();
+		$id = $in->getSignedLShort();
 		if($id !== 0){
-			$meta = $newFormat ? $in->getSignedLShort() : $in->getVarInt();
+			$meta = $in->getSignedLShort();
 		}else{
 			$meta = 0;
 		}
@@ -50,11 +48,9 @@ final class IntIdMetaItemDescriptor implements ItemDescriptor{
 	}
 
 	public function write(PacketSerializer $out) : void{
-		$newFormat = $out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_30;
-
-		$newFormat ? $out->putLShort($this->id) : $out->putVarInt($this->id);
+		$out->putLShort($this->id);
 		if($this->id !== 0){
-			$newFormat ? $out->putLShort($this->meta) : $out->putVarInt($this->meta);
+			$out->putLShort($this->meta);
 		}
 	}
 }

@@ -38,16 +38,12 @@ class RemoveVolumeEntityPacket extends DataPacket implements ClientboundPacket{
 
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->entityNetId = $in->getUnsignedVarInt();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_30){
-			$this->dimension = $in->getVarInt();
-		}
+		$this->dimension = $in->getVarInt();
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putUnsignedVarInt($this->entityNetId);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_18_30){
-			$out->putVarInt($this->dimension);
-		}
+		$out->putVarInt($this->dimension);
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

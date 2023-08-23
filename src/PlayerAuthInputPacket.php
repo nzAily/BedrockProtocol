@@ -216,9 +216,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		$this->inputFlags = $in->getUnsignedVarLong();
 		$this->inputMode = $in->getUnsignedVarInt();
 		$this->playMode = $in->getUnsignedVarInt();
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_0){
-			$this->interactionMode = $in->getUnsignedVarInt();
-		}
+		$this->interactionMode = $in->getUnsignedVarInt();
 		if($this->playMode === PlayMode::VR){
 			$this->vrGazeDirection = $in->getVector3();
 		}
@@ -242,10 +240,8 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 				};
 			}
 		}
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_70){
-			$this->analogMoveVecX = $in->getLFloat();
-			$this->analogMoveVecZ = $in->getLFloat();
-		}
+		$this->analogMoveVecX = $in->getLFloat();
+		$this->analogMoveVecZ = $in->getLFloat();
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -258,9 +254,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		$out->putUnsignedVarLong($this->inputFlags);
 		$out->putUnsignedVarInt($this->inputMode);
 		$out->putUnsignedVarInt($this->playMode);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_0){
-			$out->putUnsignedVarInt($this->interactionMode);
-		}
+		$out->putUnsignedVarInt($this->interactionMode);
 		if($this->playMode === PlayMode::VR){
 			assert($this->vrGazeDirection !== null);
 			$out->putVector3($this->vrGazeDirection);
@@ -280,10 +274,8 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 				$blockAction->write($out);
 			}
 		}
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_19_70){
-			$out->putLFloat($this->analogMoveVecX);
-			$out->putLFloat($this->analogMoveVecZ);
-		}
+		$out->putLFloat($this->analogMoveVecX);
+		$out->putLFloat($this->analogMoveVecZ);
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{
