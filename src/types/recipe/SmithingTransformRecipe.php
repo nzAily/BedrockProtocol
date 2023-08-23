@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\recipe;
 
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStack;
 
@@ -35,7 +34,7 @@ final class SmithingTransformRecipe extends RecipeWithTypeId{
 
 	public function getRecipeId() : string{ return $this->recipeId; }
 
-	public function getTemplate() : ?RecipeIngredient{ return $this->template; }
+	public function getTemplate() : RecipeIngredient{ return $this->template; }
 
 	public function getInput() : RecipeIngredient{ return $this->input; }
 

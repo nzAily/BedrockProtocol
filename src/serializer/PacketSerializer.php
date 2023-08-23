@@ -20,7 +20,6 @@ use pocketmine\nbt\NbtDataException;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\TreeRoot;
 use pocketmine\network\mcpe\protocol\PacketDecodeException;
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\BoolGameRule;
 use pocketmine\network\mcpe\protocol\types\command\CommandOriginData;
@@ -191,7 +190,7 @@ class PacketSerializer extends BinaryStream{
 			$persona,
 			$capeOnClassic,
 			$isPrimaryUser,
-			$override
+			$override,
 		);
 	}
 
@@ -353,7 +352,7 @@ class PacketSerializer extends BinaryStream{
 
 		$this->putVarInt($item->getBlockRuntimeId());
 		$context = $this->context;
-		$this->putString((function() use ($item, $context) : string{
+		$this->putString((static function() use ($item, $context) : string{
 			$extraData = PacketSerializer::encoder($context);
 
 			$nbt = $item->getNbt();
@@ -453,10 +452,8 @@ class PacketSerializer extends BinaryStream{
 	 * @phpstan-param array<int, MetadataProperty> $metadata
 	 */
 	public function putEntityMetadata(array $metadata) : void{
-		$data = EntityMetadataFlags::encode($metadata, $this->getProtocolId());
-
-		$this->putUnsignedVarInt(count($data));
-		foreach($data as $key => $d){
+		$this->putUnsignedVarInt(count($metadata));
+		foreach($metadata as $key => $d){
 			$this->putUnsignedVarInt($key);
 			$this->putUnsignedVarInt($d->getTypeId());
 			$d->write($this);

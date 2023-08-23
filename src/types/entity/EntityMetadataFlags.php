@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\entity;
 
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
-use const PHP_INT_MAX;
-
 final class EntityMetadataFlags{
 
 	private function __construct(){
@@ -137,30 +134,4 @@ final class EntityMetadataFlags{
 	public const HAPPY = 112;
 	public const SEARCHING = 113;
 	public const CRAWLING = 114;
-
-	/**
-	 * Rewrites the MetadataFlags from the latest protocol version to the given protocol version.
-	 *
-	 * @param MetadataProperty[] $metadata
-	 * @phpstan-param array<int, MetadataProperty> $metadata
-	 *
-	 * @return MetadataProperty[]
-	 * @phpstan-return array<int, MetadataProperty>
-	 */
-	public static function encode(array $metadata, int $protocolId) : array{
-		return $metadata;
-	}
-
-	/**
-	 * Rewrites the MetadataFlags from the given protocol version to the latest protocol version.
-	 *
-	 * @param MetadataProperty[] $metadata
-	 * @phpstan-param array<int, MetadataProperty> $metadata
-	 *
-	 * @return MetadataProperty[]
-	 * @phpstan-return array<int, MetadataProperty>
-	 */
-	public static function decode(array $metadata, int $protocolId) : array{
-		return $metadata;
-	}
 }

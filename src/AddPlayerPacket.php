@@ -16,7 +16,6 @@ namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
-use pocketmine\network\mcpe\protocol\types\AbilitiesData;
 use pocketmine\network\mcpe\protocol\types\DeviceOS;
 use pocketmine\network\mcpe\protocol\types\entity\EntityLink;
 use pocketmine\network\mcpe\protocol\types\entity\MetadataProperty;
@@ -111,7 +110,7 @@ class AddPlayerPacket extends DataPacket implements ClientboundPacket{
 		$this->headYaw = $in->getLFloat();
 		$this->item = ItemStackWrapper::read($in);
 		$this->gameMode = $in->getVarInt();
-		$this->metadata = $in->getEntityMetadata(); // TODO: convert back?
+		$this->metadata = $in->getEntityMetadata();
 		$this->syncedProperties = PropertySyncData::read($in);
 
 		$this->abilitiesPacket = new UpdateAbilitiesPacket();

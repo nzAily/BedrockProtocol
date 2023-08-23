@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\protocol\types\inventory\stackrequest;
 
 use pocketmine\network\mcpe\protocol\PacketDecodeException;
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\utils\BinaryDataException;
 use function count;
@@ -88,7 +87,7 @@ final class ItemStackRequest{
 			$filterStrings[] = $in->getString();
 		}
 		$filterStringCause = $in->getLInt();
-		return new self($requestId, $actions, $filterStrings, $filterStringCause ?? 0);
+		return new self($requestId, $actions, $filterStrings, $filterStringCause);
 	}
 
 	public function write(PacketSerializer $out) : void{

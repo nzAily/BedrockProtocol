@@ -46,7 +46,7 @@ final class ClientData{
 	/** @required */
 	public int $ClientRandomId;
 
-	/** >= PROTOCOL_1_19_80 */
+	/** @required */
 	public bool $CompatibleWithClientSideChunkGen;
 
 	/** @required */
@@ -70,13 +70,13 @@ final class ClientData{
 	/** @required */
 	public int $GuiScale;
 
-	/** >= PROTOCOL_1_19_10 */
+	/** @required */
 	public bool $IsEditorMode;
 
 	/** @required */
 	public string $LanguageCode;
 
-	/** >= PROTOCOL_1_19_63 */
+	/** @required */
 	public bool $OverrideSkin;
 
 	/**
@@ -147,7 +147,7 @@ final class ClientData{
 	/** @required */
 	public bool $ThirdPartyNameOnly;
 
-	/** >= PROTOCOL_1_19_20 */
+	/** @required */
 	public bool $TrustedSkin;
 
 	/** @required */

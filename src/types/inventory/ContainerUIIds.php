@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\inventory;
 
-use pocketmine\network\mcpe\protocol\ProtocolInfo;
-use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
-
 final class ContainerUIIds{
 
 	private function __construct(){
@@ -85,12 +82,4 @@ final class ContainerUIIds{
 	public const CURSOR = 59;
 	public const CREATED_OUTPUT = 60;
 	public const SMITHING_TABLE_TEMPLATE = 61;
-
-	public static function write(PacketSerializer $out, int $containerId) : void{
-		$out->putByte($containerId);
-	}
-
-	public static function read(PacketSerializer $in) : int{
-		return $in->getByte();
-	}
 }

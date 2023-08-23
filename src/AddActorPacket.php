@@ -105,7 +105,7 @@ class AddActorPacket extends DataPacket implements ClientboundPacket{
 			$this->attributes[] = new Attribute($id, $min, $max, $current, $current, []);
 		}
 
-		$this->metadata = $in->getEntityMetadata(); // TODO: convert back?
+		$this->metadata = $in->getEntityMetadata();
 		$this->syncedProperties = PropertySyncData::read($in);
 
 		$linkCount = $in->getUnsignedVarInt();
