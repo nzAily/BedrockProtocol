@@ -60,7 +60,7 @@ class CameraPresetsPacket extends DataPacket implements ClientboundPacket{
 		$presents = $nbt->getListTag("presets") ?? throw new \InvalidArgumentException("Missing presets tag");
 		foreach($presents as $presetTag){
 			if(!$presetTag instanceof CompoundTag){
-				throw new \InvalidArgumentException("Expected CompoundTag, got " . $presetTag->getTagType());
+				throw new \InvalidArgumentException("Expected CompoundTag, got " . $presetTag->getType());
 			}
 
 			$this->presets[] = CameraPreset::fromNBT($presetTag);
