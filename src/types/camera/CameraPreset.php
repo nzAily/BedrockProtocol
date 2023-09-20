@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\camera;
 
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 
 final class CameraPreset{
@@ -74,6 +76,24 @@ final class CameraPreset{
 		);
 	}
 
+	public static function fromNBT(CompoundTag $nbt) : self{
+		return new self(
+			$nbt->getString("identifier"),
+			$nbt->getString("inherit_from"),
+			$nbt->getTag("pos_x") === null ? null : $nbt->getFloat("pos_x"),
+			$nbt->getTag("pos_y") === null ? null : $nbt->getFloat("pos_y"),
+			$nbt->getTag("pos_z") === null ? null : $nbt->getFloat("pos_z"),
+			$nbt->getTag("rot_x") === null ? null : $nbt->getFloat("rot_x"),
+			$nbt->getTag("rot_y") === null ? null : $nbt->getFloat("rot_y"),
+			$nbt->getTag("audio_listener_type") === null ? null : match($nbt->getString("audio_listener_type")){
+				"camera" => self::AUDIO_LISTENER_TYPE_CAMERA,
+				"player" => self::AUDIO_LISTENER_TYPE_PLAYER,
+				default => throw new \InvalidArgumentException("Invalid audio listener type: " . $nbt->getString("audio_listener_type")),
+			},
+			$nbt->getTag("player_effects") === null ? null : $nbt->getByte("player_effects") !== 0
+		);
+	}
+
 	public function write(PacketSerializer $out) : void{
 		$out->putString($this->name);
 		$out->putString($this->parent);
@@ -84,5 +104,47 @@ final class CameraPreset{
 		$out->writeOptional($this->yaw, fn(float $v) => $out->putLFloat($v));
 		$out->writeOptional($this->audioListenerType, fn(int $v) => $out->putByte($v));
 		$out->writeOptional($this->playerEffects, fn(bool $v) => $out->putBool($v));
+	}
+
+	public function toNBT(int $protocolId) : CompoundTag{
+		$nbt = CompoundTag::create()
+			->setString("identifier", $this->name)
+			->setString("inherit_from", $this->parent);
+
+		if($this->xPosition !== null){
+			$nbt->setFloat("pos_x", $this->xPosition);
+		}
+
+		if($this->yPosition !== null){
+			$nbt->setFloat("pos_y", $this->yPosition);
+		}
+
+		if($this->zPosition !== null){
+			$nbt->setFloat("pos_z", $this->zPosition);
+		}
+
+		if($this->pitch !== null){
+			$nbt->setFloat("rot_x", $this->pitch);
+		}
+
+		if($this->yaw !== null){
+			$nbt->setFloat("rot_y", $this->yaw);
+		}
+
+		if($protocolId >= ProtocolInfo::PROTOCOL_1_20_10){
+			if($this->audioListenerType !== null){
+				$nbt->setString("audio_listener_type", match($this->audioListenerType){
+					self::AUDIO_LISTENER_TYPE_CAMERA => "camera",
+					self::AUDIO_LISTENER_TYPE_PLAYER => "player",
+					default => throw new \InvalidArgumentException("Invalid audio listener type: $this->audioListenerType"),
+				});
+			}
+
+			if($this->playerEffects !== null){
+				$nbt->setByte("player_effects", (int) $this->playerEffects);
+			}
+		}
+
+		return $nbt;
 	}
 }

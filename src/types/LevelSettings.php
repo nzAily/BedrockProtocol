@@ -99,7 +99,7 @@ final class LevelSettings{
 		$this->difficulty = $in->getVarInt();
 		$this->spawnPosition = $in->getBlockPosition();
 		$this->hasAchievementsDisabled = $in->getBool();
-		$this->editorWorldType = $in->getVarInt();
+		$this->editorWorldType = $in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_30 ? $in->getVarInt() : ($in->getBool() ? EditorWorldType::PROJECT : EditorWorldType::NON_EDITOR);
 		$this->createdInEditorMode = $in->getBool();
 		$this->exportedFromEditorMode = $in->getBool();
 		$this->time = $in->getVarInt();
@@ -149,7 +149,11 @@ final class LevelSettings{
 		$out->putVarInt($this->difficulty);
 		$out->putBlockPosition($this->spawnPosition);
 		$out->putBool($this->hasAchievementsDisabled);
-		$out->putVarInt($this->editorWorldType);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_30){
+			$out->putVarInt($this->editorWorldType);
+		}else{
+			$out->putBool($this->editorWorldType !== EditorWorldType::NON_EDITOR);
+		}
 		$out->putBool($this->createdInEditorMode);
 		$out->putBool($this->exportedFromEditorMode);
 		$out->putVarInt($this->time);

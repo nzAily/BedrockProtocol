@@ -67,11 +67,13 @@ class ResourcePacksInfoPacket extends DataPacket implements ClientboundPacket{
 			$this->resourcePackEntries[] = ResourcePackInfoEntry::read($in);
 		}
 
-		$this->cdnUrls = [];
-		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; $i++){
-			$packId = $in->getString();
-			$cdnUrl = $in->getString();
-			$this->cdnUrls[$packId] = $cdnUrl;
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_30){
+			$this->cdnUrls = [];
+			for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; $i++){
+				$packId = $in->getString();
+				$cdnUrl = $in->getString();
+				$this->cdnUrls[$packId] = $cdnUrl;
+			}
 		}
 	}
 
@@ -87,10 +89,12 @@ class ResourcePacksInfoPacket extends DataPacket implements ClientboundPacket{
 		foreach($this->resourcePackEntries as $entry){
 			$entry->write($out);
 		}
-		$out->putUnsignedVarInt(count($this->cdnUrls));
-		foreach($this->cdnUrls as $packId => $cdnUrl){
-			$out->putString($packId);
-			$out->putString($cdnUrl);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_30){
+			$out->putUnsignedVarInt(count($this->cdnUrls));
+			foreach($this->cdnUrls as $packId => $cdnUrl){
+				$out->putString($packId);
+				$out->putString($cdnUrl);
+			}
 		}
 	}
 
