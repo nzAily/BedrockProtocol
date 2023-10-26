@@ -32,18 +32,20 @@ final class ProtocolInfo{
 	 */
 
 	/** Actual Minecraft: PE protocol version */
-	public const CURRENT_PROTOCOL = self::PROTOCOL_1_20_30;
+	public const CURRENT_PROTOCOL = self::PROTOCOL_1_20_40;
 	public const ACCEPTED_PROTOCOL = [
 		self::PROTOCOL_1_20_0,
 		self::PROTOCOL_1_20_10,
+		self::PROTOCOL_1_20_30,
 		self::CURRENT_PROTOCOL
 	];
 
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
-	public const MINECRAFT_VERSION = 'v1.20.30';
+	public const MINECRAFT_VERSION = 'v1.20.40';
 	/** Version number sent to clients in ping responses. */
-	public const MINECRAFT_VERSION_NETWORK = '1.20.30';
+	public const MINECRAFT_VERSION_NETWORK = '1.20.40';
 
+	public const PROTOCOL_1_20_40 = 622;
 	public const PROTOCOL_1_20_30 = 618;
 	public const PROTOCOL_1_20_10 = 594;
 	public const PROTOCOL_1_20_0 = 589;
