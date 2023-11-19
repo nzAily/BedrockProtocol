@@ -32,7 +32,7 @@ use function count;
 class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 	public const NETWORK_ID = ProtocolInfo::PLAYER_AUTH_INPUT_PACKET;
 
-	private Vector3 $position;
+	public Vector3 $position;
 	private float $pitch;
 	private float $yaw;
 	private float $headYaw;
