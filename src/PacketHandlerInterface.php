@@ -118,6 +118,8 @@ interface PacketHandlerInterface{
 
 	public function handleCraftingData(CraftingDataPacket $packet) : bool;
 
+	public function handleCraftingEvent(CraftingEventPacket $packet) : bool;
+
 	public function handleGuiDataPickItem(GuiDataPickItemPacket $packet) : bool;
 
 	public function handleBlockActorData(BlockActorDataPacket $packet) : bool;

@@ -222,6 +222,10 @@ trait PacketHandlerDefaultImplTrait{
 		return false;
 	}
 
+	public function handleCraftingEvent(CraftingEventPacket $packet) : bool{
+		return false;
+	}
+
 	public function handleGuiDataPickItem(GuiDataPickItemPacket $packet) : bool{
 		return false;
 	}
