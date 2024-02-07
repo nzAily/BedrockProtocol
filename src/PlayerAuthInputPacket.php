@@ -104,9 +104,6 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		if($blockActions !== null){
 			$result->inputFlags |= 1 << PlayerAuthInputFlags::PERFORM_BLOCK_ACTIONS;
 		}
-		if($clientPredictedVehicleActorUniqueId !== null){
-			$result->inputFlags |= 1 << PlayerAuthInputFlags::IN_CLIENT_PREDICTED_VEHICLE;
-		}
 
 		$result->inputMode = $inputMode;
 		$result->playMode = $playMode;
@@ -248,7 +245,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 				};
 			}
 		}
-		if($this->hasFlag(PlayerAuthInputFlags::IN_CLIENT_PREDICTED_VEHICLE)){
+		if($this->hasFlag(PlayerAuthInputFlags::IN_CLIENT_PREDICTED_VEHICLE) && $in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_60){
 			$this->clientPredictedVehicleActorUniqueId = $in->getActorUniqueId();
 		}
 		$this->analogMoveVecX = $in->getLFloat();
@@ -256,13 +253,19 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
+		$inputFlags = $this->inputFlags;
+
+		if($this->clientPredictedVehicleActorUniqueId !== null && $out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_60){
+			$inputFlags |= 1 << PlayerAuthInputFlags::IN_CLIENT_PREDICTED_VEHICLE;
+		}
+
 		$out->putLFloat($this->pitch);
 		$out->putLFloat($this->yaw);
 		$out->putVector3($this->position);
 		$out->putLFloat($this->moveVecX);
 		$out->putLFloat($this->moveVecZ);
 		$out->putLFloat($this->headYaw);
-		$out->putUnsignedVarLong($this->inputFlags);
+		$out->putUnsignedVarLong($inputFlags);
 		$out->putUnsignedVarInt($this->inputMode);
 		$out->putUnsignedVarInt($this->playMode);
 		$out->putUnsignedVarInt($this->interactionMode);
@@ -285,7 +288,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 				$blockAction->write($out);
 			}
 		}
-		if($this->clientPredictedVehicleActorUniqueId !== null){
+		if($this->clientPredictedVehicleActorUniqueId !== null && $out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_60){
 			$out->putActorUniqueId($this->clientPredictedVehicleActorUniqueId);
 		}
 		$out->putLFloat($this->analogMoveVecX);
