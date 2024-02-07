@@ -44,7 +44,7 @@ final class CameraFadeInstruction{
 		$color = $nbt->getCompoundTag("color") ?? throw new \InvalidArgumentException("Missing color tag");
 		return new self(
 			Time::fromNBT($time),
-			CameraFadeInstructionColor::fromNBT($color),
+			Color::fromNBT($color),
 		);
 	}
 
