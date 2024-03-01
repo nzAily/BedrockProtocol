@@ -57,7 +57,9 @@ class CorrectPlayerMovePredictionPacket extends DataPacket implements Clientboun
 		$this->delta = $in->getVector3();
 		$this->onGround = $in->getBool();
 		$this->tick = $in->getUnsignedVarLong();
-		$this->predictionType = $in->getByte();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_60){
+			$this->predictionType = $in->getByte();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -65,7 +67,9 @@ class CorrectPlayerMovePredictionPacket extends DataPacket implements Clientboun
 		$out->putVector3($this->delta);
 		$out->putBool($this->onGround);
 		$out->putUnsignedVarLong($this->tick);
-		$out->putByte($this->predictionType);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_60){
+			$out->putByte($this->predictionType);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

@@ -65,21 +65,21 @@ use function strrev;
 use function substr;
 
 class PacketSerializer extends BinaryStream{
-	protected function __construct(string $buffer = "", int $offset = 0){
+	protected function __construct(private int $protocolId, string $buffer = "", int $offset = 0){
 		//overridden to change visibility
 		parent::__construct($buffer, $offset);
 	}
 
-	public static function encoder() : self{
-		return new self();
+	public static function encoder(int $protocolId) : self{
+		return new self($protocolId);
 	}
 
-	public static function decoder(string $buffer, int $offset) : self{
-		return new self($buffer, $offset);
+	public static function decoder(int $protocolId, string $buffer, int $offset) : self{
+		return new self($protocolId, $buffer, $offset);
 	}
 
 	public function getProtocolId() : int{
-		return $this->context->getProtocolId();
+		return $this->protocolId;
 	}
 
 	/**
