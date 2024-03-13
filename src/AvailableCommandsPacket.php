@@ -129,6 +129,21 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 	}
 
 	public static function convertArg(int $protocolId, int $type) : int{
+		if($protocolId <= ProtocolInfo::PROTOCOL_1_20_60){
+			return match($type){
+				self::ARG_TYPE_EQUIPMENT_SLOT => 43,
+				self::ARG_TYPE_STRING => 44,
+				self::ARG_TYPE_INT_POSITION => 52,
+				self::ARG_TYPE_POSITION => 53,
+				self::ARG_TYPE_MESSAGE => 55,
+				self::ARG_TYPE_RAWTEXT => 58,
+				self::ARG_TYPE_JSON => 62,
+				self::ARG_TYPE_BLOCK_STATES => 71,
+				self::ARG_TYPE_COMMAND => 74,
+				default => $type,
+			};
+		}
+
 		return $type;
 	}
 

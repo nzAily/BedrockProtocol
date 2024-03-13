@@ -65,7 +65,9 @@ class ResourcePacksInfoPacket extends DataPacket implements ClientboundPacket{
 
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->mustAccept = $in->getBool();
-		$this->hasAddons = $in->getBool();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_70){
+			$this->hasAddons = $in->getBool();
+		}
 		$this->hasScripts = $in->getBool();
 		$this->forceServerPacks = $in->getBool();
 		$behaviorPackCount = $in->getLShort();
@@ -90,7 +92,9 @@ class ResourcePacksInfoPacket extends DataPacket implements ClientboundPacket{
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putBool($this->mustAccept);
-		$out->putBool($this->hasAddons);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_70){
+			$out->putBool($this->hasAddons);
+		}
 		$out->putBool($this->hasScripts);
 		$out->putBool($this->forceServerPacks);
 		$out->putLShort(count($this->behaviorPackEntries));
