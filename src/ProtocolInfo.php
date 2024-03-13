@@ -32,21 +32,23 @@ final class ProtocolInfo{
 	 */
 
 	/** Actual Minecraft: PE protocol version */
-	public const CURRENT_PROTOCOL = self::PROTOCOL_1_20_60;
+	public const CURRENT_PROTOCOL = self::PROTOCOL_1_20_70;
 	public const ACCEPTED_PROTOCOL = [
 		self::PROTOCOL_1_20_0,
 		self::PROTOCOL_1_20_10,
 		self::PROTOCOL_1_20_30,
 		self::PROTOCOL_1_20_40,
 		self::PROTOCOL_1_20_50,
+		self::PROTOCOL_1_20_60,
 		self::CURRENT_PROTOCOL
 	];
 
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
-	public const MINECRAFT_VERSION = 'v1.20.60';
+	public const MINECRAFT_VERSION = 'v1.20.70';
 	/** Version number sent to clients in ping responses. */
-	public const MINECRAFT_VERSION_NETWORK = '1.20.60';
+	public const MINECRAFT_VERSION_NETWORK = '1.20.70';
 
+	public const PROTOCOL_1_20_70 = 662;
 	public const PROTOCOL_1_20_60 = 649;
 	public const PROTOCOL_1_20_50 = 630;
 	public const PROTOCOL_1_20_40 = 622;
@@ -124,7 +126,7 @@ final class ProtocolInfo{
 	public const MAP_INFO_REQUEST_PACKET = 0x44;
 	public const REQUEST_CHUNK_RADIUS_PACKET = 0x45;
 	public const CHUNK_RADIUS_UPDATED_PACKET = 0x46;
-	public const ITEM_FRAME_DROP_ITEM_PACKET = 0x47;
+
 	public const GAME_RULES_CHANGED_PACKET = 0x48;
 	public const CAMERA_PACKET = 0x49;
 	public const BOSS_EVENT_PACKET = 0x4a;
