@@ -97,7 +97,9 @@ final class LevelSettings{
 		$this->spawnSettings = SpawnSettings::read($in);
 		$this->generator = $in->getVarInt();
 		$this->worldGamemode = $in->getVarInt();
-		$this->hardcore = $in->getBool();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80){
+			$this->hardcore = $in->getBool();
+		}
 		$this->difficulty = $in->getVarInt();
 		$this->spawnPosition = $in->getBlockPosition();
 		$this->hasAchievementsDisabled = $in->getBool();
@@ -148,7 +150,9 @@ final class LevelSettings{
 		$this->spawnSettings->write($out);
 		$out->putVarInt($this->generator);
 		$out->putVarInt($this->worldGamemode);
-		$out->putBool($this->hardcore);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80){
+			$out->putBool($this->hardcore);
+		}
 		$out->putVarInt($this->difficulty);
 		$out->putBlockPosition($this->spawnPosition);
 		$out->putBool($this->hasAchievementsDisabled);
