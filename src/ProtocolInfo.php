@@ -32,7 +32,7 @@ final class ProtocolInfo{
 	 */
 
 	/** Actual Minecraft: PE protocol version */
-	public const CURRENT_PROTOCOL = self::PROTOCOL_1_20_70;
+	public const CURRENT_PROTOCOL = self::PROTOCOL_1_20_80;
 	public const ACCEPTED_PROTOCOL = [
 		self::PROTOCOL_1_20_0,
 		self::PROTOCOL_1_20_10,
@@ -40,14 +40,16 @@ final class ProtocolInfo{
 		self::PROTOCOL_1_20_40,
 		self::PROTOCOL_1_20_50,
 		self::PROTOCOL_1_20_60,
+		self::PROTOCOL_1_20_70,
 		self::CURRENT_PROTOCOL
 	];
 
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
-	public const MINECRAFT_VERSION = 'v1.20.70';
+	public const MINECRAFT_VERSION = 'v1.20.80';
 	/** Version number sent to clients in ping responses. */
-	public const MINECRAFT_VERSION_NETWORK = '1.20.70';
+	public const MINECRAFT_VERSION_NETWORK = '1.20.80';
 
+	public const PROTOCOL_1_20_80 = 671;
 	public const PROTOCOL_1_20_70 = 662;
 	public const PROTOCOL_1_20_60 = 649;
 	public const PROTOCOL_1_20_50 = 630;
@@ -215,7 +217,7 @@ final class ProtocolInfo{
 	public const PLAYER_FOG_PACKET = 0xa0;
 	public const CORRECT_PLAYER_MOVE_PREDICTION_PACKET = 0xa1;
 	public const ITEM_COMPONENT_PACKET = 0xa2;
-	public const FILTER_TEXT_PACKET = 0xa3;
+
 	public const CLIENTBOUND_DEBUG_RENDERER_PACKET = 0xa4;
 	public const SYNC_ACTOR_PROPERTY_PACKET = 0xa5;
 	public const ADD_VOLUME_ENTITY_PACKET = 0xa6;
