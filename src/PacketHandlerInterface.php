@@ -62,8 +62,6 @@ interface PacketHandlerInterface{
 
 	public function handleAddPainting(AddPaintingPacket $packet) : bool;
 
-	public function handleTickSync(TickSyncPacket $packet) : bool;
-
 	public function handleLevelSoundEventPacketV1(LevelSoundEventPacketV1 $packet) : bool;
 
 	public function handleLevelEvent(LevelEventPacket $packet) : bool;
@@ -409,4 +407,6 @@ interface PacketHandlerInterface{
 	public function handleSetPlayerInventoryOptions(SetPlayerInventoryOptionsPacket $packet) : bool;
 
 	public function handleSetHud(SetHudPacket $packet) : bool;
+
+	public function handleAwardAchievement(AwardAchievementPacket $packet) : bool;
 }
