@@ -36,13 +36,17 @@ class ContainerClosePacket extends DataPacket implements ClientboundPacket, Serv
 
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->windowId = $in->getByte();
-		$this->windowType = $in->getByte();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_0){
+			$this->windowType = $in->getByte();
+		}
 		$this->server = $in->getBool();
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putByte($this->windowId);
-		$out->putByte($this->windowType);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_0){
+			$out->putByte($this->windowType);
+		}
 		$out->putBool($this->server);
 	}
 

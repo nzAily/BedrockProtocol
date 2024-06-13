@@ -147,9 +147,11 @@ final class LevelSettings{
 		$this->experimentalGameplayOverride = $in->readOptional($in->getBool(...));
 		$this->chatRestrictionLevel = $in->getByte();
 		$this->disablePlayerInteractions = $in->getBool();
-		$this->serverIdentifier = $in->getString();
-		$this->worldIdentifier = $in->getString();
-		$this->scenarioIdentifier = $in->getString();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_0){
+			$this->serverIdentifier = $in->getString();
+			$this->worldIdentifier = $in->getString();
+			$this->scenarioIdentifier = $in->getString();
+		}
 	}
 
 	public function write(PacketSerializer $out) : void{
@@ -207,8 +209,10 @@ final class LevelSettings{
 		$out->writeOptional($this->experimentalGameplayOverride, $out->putBool(...));
 		$out->putByte($this->chatRestrictionLevel);
 		$out->putBool($this->disablePlayerInteractions);
-		$out->putString($this->serverIdentifier);
-		$out->putString($this->worldIdentifier);
-		$out->putString($this->scenarioIdentifier);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_0){
+			$out->putString($this->serverIdentifier);
+			$out->putString($this->worldIdentifier);
+			$out->putString($this->scenarioIdentifier);
+		}
 	}
 }

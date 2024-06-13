@@ -126,7 +126,9 @@ class TextPacket extends DataPacket implements ClientboundPacket, ServerboundPac
 
 		$this->xboxUserId = $in->getString();
 		$this->platformChatId = $in->getString();
-		$this->filteredMessage = $in->getString();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_0){
+			$this->filteredMessage = $in->getString();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -160,7 +162,9 @@ class TextPacket extends DataPacket implements ClientboundPacket, ServerboundPac
 
 		$out->putString($this->xboxUserId);
 		$out->putString($this->platformChatId);
-		$out->putString($this->filteredMessage);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_0){
+			$out->putString($this->filteredMessage);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

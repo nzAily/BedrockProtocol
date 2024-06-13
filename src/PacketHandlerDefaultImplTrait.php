@@ -110,6 +110,10 @@ trait PacketHandlerDefaultImplTrait{
 		return false;
 	}
 
+	public function handleTickSync(TickSyncPacket $packet) : bool{
+		return false;
+	}
+
 	public function handleLevelSoundEventPacketV1(LevelSoundEventPacketV1 $packet) : bool{
 		return false;
 	}
