@@ -412,5 +412,5 @@ interface PacketHandlerInterface{
 
 	public function handleAwardAchievement(AwardAchievementPacket $packet) : bool;
 
-	public function handleCloseForm(CloseFormPacket $packet) : bool;
+	public function handleCloseForm(ClientboundCloseFormPacket $packet) : bool;
 }

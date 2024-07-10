@@ -810,7 +810,7 @@ trait PacketHandlerDefaultImplTrait{
 		return false;
 	}
 
-	public function handleCloseForm(CloseFormPacket $packet) : bool{
+	public function handleCloseForm(ClientboundCloseFormPacket $packet) : bool{
 		return false;
 	}
 }
