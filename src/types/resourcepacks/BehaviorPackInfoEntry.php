@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\resourcepacks;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 
 class BehaviorPackInfoEntry{
@@ -66,7 +67,9 @@ class BehaviorPackInfoEntry{
 		$out->putString($this->subPackName);
 		$out->putString($this->contentId);
 		$out->putBool($this->hasScripts);
-		$out->putBool($this->isAddonPack);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$out->putBool($this->isAddonPack);
+		}
 	}
 
 	public static function read(PacketSerializer $in) : self{
@@ -77,7 +80,9 @@ class BehaviorPackInfoEntry{
 		$subPackName = $in->getString();
 		$contentId = $in->getString();
 		$hasScripts = $in->getBool();
-		$isAddonPack = $in->getBool();
-		return new self($uuid, $version, $sizeBytes, $encryptionKey, $subPackName, $contentId, $hasScripts, $isAddonPack);
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$isAddonPack = $in->getBool();
+		}
+		return new self($uuid, $version, $sizeBytes, $encryptionKey, $subPackName, $contentId, $hasScripts, $isAddonPack ?? false);
 	}
 }

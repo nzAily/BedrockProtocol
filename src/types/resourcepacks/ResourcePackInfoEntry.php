@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\resourcepacks;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 
 class ResourcePackInfoEntry{
@@ -69,7 +70,9 @@ class ResourcePackInfoEntry{
 		$out->putString($this->subPackName);
 		$out->putString($this->contentId);
 		$out->putBool($this->hasScripts);
-		$out->putBool($this->isAddonPack);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$out->putBool($this->isAddonPack);
+		}
 		$out->putBool($this->isRtxCapable);
 	}
 
@@ -81,8 +84,10 @@ class ResourcePackInfoEntry{
 		$subPackName = $in->getString();
 		$contentId = $in->getString();
 		$hasScripts = $in->getBool();
-		$isAddonPack = $in->getBool();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$isAddonPack = $in->getBool();
+		}
 		$rtxCapable = $in->getBool();
-		return new self($uuid, $version, $sizeBytes, $encryptionKey, $subPackName, $contentId, $hasScripts, $isAddonPack, $rtxCapable);
+		return new self($uuid, $version, $sizeBytes, $encryptionKey, $subPackName, $contentId, $hasScripts, $isAddonPack ?? false, $rtxCapable);
 	}
 }

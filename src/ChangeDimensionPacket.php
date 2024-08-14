@@ -41,14 +41,18 @@ class ChangeDimensionPacket extends DataPacket implements ClientboundPacket{
 		$this->dimension = $in->getVarInt();
 		$this->position = $in->getVector3();
 		$this->respawn = $in->getBool();
-		$this->loadingScreenId = $in->readOptional(fn() => $in->getLInt());
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$this->loadingScreenId = $in->readOptional(fn() => $in->getLInt());
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putVarInt($this->dimension);
 		$out->putVector3($this->position);
 		$out->putBool($this->respawn);
-		$out->writeOptional($this->loadingScreenId, $out->putLInt(...));
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$out->writeOptional($this->loadingScreenId, $out->putLInt(...));
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

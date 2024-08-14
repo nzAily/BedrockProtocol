@@ -44,7 +44,9 @@ class InventoryContentPacket extends DataPacket implements ClientboundPacket{
 		for($i = 0; $i < $count; ++$i){
 			$this->items[] = $in->getItemStackWrapper();
 		}
-		$this->dynamicContainerId = $in->getUnsignedVarInt();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$this->dynamicContainerId = $in->getUnsignedVarInt();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -53,7 +55,9 @@ class InventoryContentPacket extends DataPacket implements ClientboundPacket{
 		foreach($this->items as $item){
 			$out->putItemStackWrapper($item);
 		}
-		$out->putUnsignedVarInt($this->dynamicContainerId);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$out->putUnsignedVarInt($this->dynamicContainerId);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

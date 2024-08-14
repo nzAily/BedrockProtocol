@@ -68,7 +68,9 @@ class PlayerArmorDamagePacket extends DataPacket implements ClientboundPacket{
 		$this->chestSlotDamage = $this->maybeReadDamage($flags, self::FLAG_CHEST, $in);
 		$this->legsSlotDamage = $this->maybeReadDamage($flags, self::FLAG_LEGS, $in);
 		$this->feetSlotDamage = $this->maybeReadDamage($flags, self::FLAG_FEET, $in);
-		$this->bodySlotDamage = $this->maybeReadDamage($flags, self::FLAG_BODY, $in);
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$this->bodySlotDamage = $this->maybeReadDamage($flags, self::FLAG_BODY, $in);
+		}
 	}
 
 	private function composeFlag(?int $field, int $flag) : int{
@@ -87,14 +89,16 @@ class PlayerArmorDamagePacket extends DataPacket implements ClientboundPacket{
 			$this->composeFlag($this->chestSlotDamage, self::FLAG_CHEST) |
 			$this->composeFlag($this->legsSlotDamage, self::FLAG_LEGS) |
 			$this->composeFlag($this->feetSlotDamage, self::FLAG_FEET) |
-			$this->composeFlag($this->bodySlotDamage, self::FLAG_BODY)
+			($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20 ? $this->composeFlag($this->bodySlotDamage, self::FLAG_BODY) : 0)
 		);
 
 		$this->maybeWriteDamage($this->headSlotDamage, $out);
 		$this->maybeWriteDamage($this->chestSlotDamage, $out);
 		$this->maybeWriteDamage($this->legsSlotDamage, $out);
 		$this->maybeWriteDamage($this->feetSlotDamage, $out);
-		$this->maybeWriteDamage($this->bodySlotDamage, $out);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$this->maybeWriteDamage($this->bodySlotDamage, $out);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

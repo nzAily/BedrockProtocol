@@ -16,6 +16,7 @@ namespace pocketmine\network\mcpe\protocol\types\inventory;
 
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\GetTypeIdFromConstTrait;
@@ -78,7 +79,9 @@ class UseItemTransactionData extends TransactionData{
 
 	protected function decodeData(PacketSerializer $stream) : void{
 		$this->actionType = $stream->getUnsignedVarInt();
-		$this->triggerType = TriggerType::fromPacket($stream->getUnsignedVarInt());
+		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$this->triggerType = TriggerType::fromPacket($stream->getUnsignedVarInt());
+		}
 		$this->blockPosition = $stream->getBlockPosition();
 		$this->face = $stream->getVarInt();
 		$this->hotbarSlot = $stream->getVarInt();
@@ -86,12 +89,16 @@ class UseItemTransactionData extends TransactionData{
 		$this->playerPosition = $stream->getVector3();
 		$this->clickPosition = $stream->getVector3();
 		$this->blockRuntimeId = $stream->getUnsignedVarInt();
-		$this->clientInteractPrediction = PredictedResult::fromPacket($stream->getUnsignedVarInt());
+		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$this->clientInteractPrediction = PredictedResult::fromPacket($stream->getUnsignedVarInt());
+		}
 	}
 
 	protected function encodeData(PacketSerializer $stream) : void{
 		$stream->putUnsignedVarInt($this->actionType);
-		$stream->putUnsignedVarInt($this->triggerType->value);
+		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$stream->putUnsignedVarInt($this->triggerType->value);
+		}
 		$stream->putBlockPosition($this->blockPosition);
 		$stream->putVarInt($this->face);
 		$stream->putVarInt($this->hotbarSlot);
@@ -99,7 +106,9 @@ class UseItemTransactionData extends TransactionData{
 		$stream->putVector3($this->playerPosition);
 		$stream->putVector3($this->clickPosition);
 		$stream->putUnsignedVarInt($this->blockRuntimeId);
-		$stream->putUnsignedVarInt($this->clientInteractPrediction->value);
+		if($stream->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$stream->putUnsignedVarInt($this->clientInteractPrediction->value);
+		}
 	}
 
 	/**

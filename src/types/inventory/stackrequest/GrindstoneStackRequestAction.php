@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\inventory\stackrequest;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\GetTypeIdFromConstTrait;
 
@@ -41,14 +42,18 @@ final class GrindstoneStackRequestAction extends ItemStackRequestAction{
 	public static function read(PacketSerializer $in) : self{
 		$recipeId = $in->readRecipeNetId();
 		$repairCost = $in->getVarInt(); //WHY!!!!
-		$repetitions = $in->getByte();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$repetitions = $in->getByte();
+		}
 
-		return new self($recipeId, $repairCost, $repetitions);
+		return new self($recipeId, $repairCost, $repetitions ?? 0);
 	}
 
 	public function write(PacketSerializer $out) : void{
 		$out->writeRecipeNetId($this->recipeId);
 		$out->putVarInt($this->repairCost);
-		$out->putByte($this->repetitions);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$out->putByte($this->repetitions);
+		}
 	}
 }

@@ -71,7 +71,9 @@ class SetTitlePacket extends DataPacket implements ClientboundPacket{
 		$this->fadeOutTime = $in->getVarInt();
 		$this->xuid = $in->getString();
 		$this->platformOnlineId = $in->getString();
-		$this->filteredTitleText = $in->getString();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$this->filteredTitleText = $in->getString();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -82,7 +84,9 @@ class SetTitlePacket extends DataPacket implements ClientboundPacket{
 		$out->putVarInt($this->fadeOutTime);
 		$out->putString($this->xuid);
 		$out->putString($this->platformOnlineId);
-		$out->putString($this->filteredTitleText);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$out->putString($this->filteredTitleText);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

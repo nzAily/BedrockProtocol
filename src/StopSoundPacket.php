@@ -37,13 +37,17 @@ class StopSoundPacket extends DataPacket implements ClientboundPacket{
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->soundName = $in->getString();
 		$this->stopAll = $in->getBool();
-		$this->stopLegacyMusic = $in->getBool();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$this->stopLegacyMusic = $in->getBool();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putString($this->soundName);
 		$out->putBool($this->stopAll);
-		$out->putBool($this->stopLegacyMusic);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$out->putBool($this->stopLegacyMusic);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\inventory\stackrequest;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\GetTypeIdFromConstTrait;
 
@@ -36,12 +37,16 @@ final class CreativeCreateStackRequestAction extends ItemStackRequestAction{
 
 	public static function read(PacketSerializer $in) : self{
 		$creativeItemId = $in->readCreativeItemNetId();
-		$repetitions = $in->getByte();
-		return new self($creativeItemId, $repetitions);
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$repetitions = $in->getByte();
+		}
+		return new self($creativeItemId, $repetitions ?? 0);
 	}
 
 	public function write(PacketSerializer $out) : void{
 		$out->writeCreativeItemNetId($this->creativeItemId);
-		$out->putByte($this->repetitions);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$out->putByte($this->repetitions);
+		}
 	}
 }
