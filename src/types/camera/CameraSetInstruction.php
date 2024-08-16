@@ -21,6 +21,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use function count;
 use function is_infinite;
@@ -58,7 +59,9 @@ final class CameraSetInstruction{
 		$cameraPosition = $in->readOptional($in->getVector3(...));
 		$rotation = $in->readOptional(fn() => CameraSetInstructionRotation::read($in));
 		$facingPosition = $in->readOptional($in->getVector3(...));
-		$viewOffset = $in->readOptional($in->getVector2(...));
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$viewOffset = $in->readOptional($in->getVector2(...));
+		}
 		$default = $in->readOptional($in->getBool(...));
 
 		return new self(
@@ -67,7 +70,7 @@ final class CameraSetInstruction{
 			$cameraPosition,
 			$rotation,
 			$facingPosition,
-			$viewOffset,
+			$viewOffset ?? null,
 			$default
 		);
 	}
@@ -96,6 +99,7 @@ final class CameraSetInstruction{
 			$cameraPosition,
 			$rotation,
 			$facingPosition,
+			null,
 			$default
 		);
 	}
@@ -106,7 +110,9 @@ final class CameraSetInstruction{
 		$out->writeOptional($this->cameraPosition, $out->putVector3(...));
 		$out->writeOptional($this->rotation, fn(CameraSetInstructionRotation $v) => $v->write($out));
 		$out->writeOptional($this->facingPosition, $out->putVector3(...));
-		$out->writeOptional($this->viewOffset, $out->putVector2(...));
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$out->writeOptional($this->viewOffset, $out->putVector2(...));
+		}
 		$out->writeOptional($this->default, $out->putBool(...));
 	}
 
