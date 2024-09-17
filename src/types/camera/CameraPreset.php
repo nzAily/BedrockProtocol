@@ -120,6 +120,9 @@ final class CameraPreset{
 			$nbt->getTag("rot_y") === null ? null : $nbt->getFloat("rot_y"),
 			null,
 			null,
+			null,
+			null,
+			null,
 			$nbt->getTag("audio_listener_type") === null ? null : match($nbt->getString("audio_listener_type")){
 				"camera" => self::AUDIO_LISTENER_TYPE_CAMERA,
 				"player" => self::AUDIO_LISTENER_TYPE_PLAYER,

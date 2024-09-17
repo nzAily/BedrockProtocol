@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\entity;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use function count;
 
@@ -55,8 +56,10 @@ final class UpdateAttribute{
 		$min = $in->getLFloat();
 		$max = $in->getLFloat();
 		$current = $in->getLFloat();
-		$defaultMin = $in->getLFloat();
-		$defaultMax = $in->getLFloat();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_30){
+			$defaultMin = $in->getLFloat();
+			$defaultMax = $in->getLFloat();
+		}
 		$default = $in->getLFloat();
 		$id = $in->getString();
 
@@ -65,15 +68,17 @@ final class UpdateAttribute{
 			$modifiers[] = AttributeModifier::read($in);
 		}
 
-		return new self($id, $min, $max, $current, $defaultMin, $defaultMax, $default, $modifiers);
+		return new self($id, $min, $max, $current, $defaultMin ?? $min, $defaultMax ?? $max, $default, $modifiers);
 	}
 
 	public function write(PacketSerializer $out) : void{
 		$out->putLFloat($this->min);
 		$out->putLFloat($this->max);
 		$out->putLFloat($this->current);
-		$out->putLFloat($this->defaultMin);
-		$out->putLFloat($this->defaultMax);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_30){
+			$out->putLFloat($this->defaultMin);
+			$out->putLFloat($this->defaultMax);
+		}
 		$out->putLFloat($this->default);
 		$out->putString($this->id);
 

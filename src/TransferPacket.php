@@ -37,13 +37,17 @@ class TransferPacket extends DataPacket implements ClientboundPacket{
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->address = $in->getString();
 		$this->port = $in->getLShort();
-		$this->reloadWorld = $in->getBool();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_30){
+			$this->reloadWorld = $in->getBool();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putString($this->address);
 		$out->putLShort($this->port);
-		$out->putBool($this->reloadWorld);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_30){
+			$out->putBool($this->reloadWorld);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{
