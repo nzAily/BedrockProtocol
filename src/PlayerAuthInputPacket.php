@@ -27,6 +27,7 @@ use pocketmine\network\mcpe\protocol\types\PlayerBlockAction;
 use pocketmine\network\mcpe\protocol\types\PlayerBlockActionStopBreak;
 use pocketmine\network\mcpe\protocol\types\PlayerBlockActionWithBlockInfo;
 use pocketmine\network\mcpe\protocol\types\PlayMode;
+use function assert;
 use function count;
 
 class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
@@ -42,6 +43,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 	private int $inputMode;
 	private int $playMode;
 	private int $interactionMode;
+	private ?Vector3 $vrGazeDirection = null;
 	private Vector2 $interactRotation;
 	private int $tick;
 	private Vector3 $delta;
@@ -69,6 +71,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		int $inputMode,
 		int $playMode,
 		int $interactionMode,
+		?Vector3 $vrGazeDirection,
 		Vector2 $interactRotation,
 		int $tick,
 		Vector3 $delta,
@@ -91,6 +94,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		$result->inputMode = $inputMode;
 		$result->playMode = $playMode;
 		$result->interactionMode = $interactionMode;
+		$result->vrGazeDirection = $vrGazeDirection;
 		$result->interactRotation = $interactRotation;
 		$result->tick = $tick;
 		$result->delta = $delta;
@@ -109,6 +113,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 	 * @param int                      $inputMode @see InputMode
 	 * @param int                      $playMode @see PlayMode
 	 * @param int                      $interactionMode @see InteractionMode
+	 * @param Vector3|null             $vrGazeDirection only used when PlayMode::VR
 	 * @param PlayerBlockAction[]|null $blockActions Blocks that the client has interacted with
 	 */
 	public static function create(
@@ -122,6 +127,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		int $inputMode,
 		int $playMode,
 		int $interactionMode,
+		?Vector3 $vrGazeDirection,
 		Vector2 $interactRotation,
 		int $tick,
 		Vector3 $delta,
@@ -133,6 +139,11 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		float $analogMoveVecZ,
 		Vector3 $cameraOrientation
 	) : self{
+		if($playMode === PlayMode::VR and $vrGazeDirection === null){
+			//yuck, can we get a properly written packet just once? ...
+			throw new \InvalidArgumentException("Gaze direction must be provided for VR play mode");
+		}
+
 		$realInputFlags = $inputFlags & ~((1 << PlayerAuthInputFlags::PERFORM_ITEM_STACK_REQUEST) | (1 << PlayerAuthInputFlags::PERFORM_ITEM_INTERACTION) | (1 << PlayerAuthInputFlags::PERFORM_BLOCK_ACTIONS));
 		if($itemStackRequest !== null){
 			$realInputFlags |= 1 << PlayerAuthInputFlags::PERFORM_ITEM_STACK_REQUEST;
@@ -155,6 +166,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 			$inputMode,
 			$playMode,
 			$interactionMode,
+			$vrGazeDirection?->asVector3(),
 			$interactRotation,
 			$tick,
 			$delta,
@@ -220,6 +232,10 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		return $this->interactionMode;
 	}
 
+	public function getVrGazeDirection() : ?Vector3{
+		return $this->vrGazeDirection;
+	}
+
 	public function getInteractRotation() : Vector2{ return $this->interactRotation; }
 
 	public function getTick() : int{
@@ -268,7 +284,11 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		$this->inputMode = $in->getUnsignedVarInt();
 		$this->playMode = $in->getUnsignedVarInt();
 		$this->interactionMode = $in->getUnsignedVarInt();
-		$this->interactRotation = $in->getVector2();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_40){
+			$this->interactRotation = $in->getVector2();
+		}elseif($this->playMode === PlayMode::VR){
+			$this->vrGazeDirection = $in->getVector3();
+		}
 		$this->tick = $in->getUnsignedVarLong();
 		$this->delta = $in->getVector3();
 		if($this->hasFlag(PlayerAuthInputFlags::PERFORM_ITEM_INTERACTION)){
@@ -294,7 +314,9 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		}
 		$this->analogMoveVecX = $in->getLFloat();
 		$this->analogMoveVecZ = $in->getLFloat();
-		$this->cameraOrientation = $in->getVector3();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_40){
+			$this->cameraOrientation = $in->getVector3();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -314,7 +336,12 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		$out->putUnsignedVarInt($this->inputMode);
 		$out->putUnsignedVarInt($this->playMode);
 		$out->putUnsignedVarInt($this->interactionMode);
-		$out->putVector2($this->interactRotation);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_40){
+			$out->putVector2($this->interactRotation);
+		}elseif($this->playMode === PlayMode::VR){
+			assert($this->vrGazeDirection !== null);
+			$out->putVector3($this->vrGazeDirection);
+		}
 		$out->putUnsignedVarLong($this->tick);
 		$out->putVector3($this->delta);
 		if($this->itemInteractionData !== null){
@@ -335,7 +362,9 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		}
 		$out->putLFloat($this->analogMoveVecX);
 		$out->putLFloat($this->analogMoveVecZ);
-		$out->putVector3($this->cameraOrientation);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_40){
+			$out->putVector3($this->cameraOrientation);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{
