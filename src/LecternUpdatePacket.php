@@ -41,7 +41,7 @@ class LecternUpdatePacket extends DataPacket implements ServerboundPacket{
 		$this->page = $in->getByte();
 		$this->totalPages = $in->getByte();
 		$this->blockPosition = $in->getBlockPosition();
-		if($in->getProtocolId() <= ProtocolInfo::PROTOCOL_1_20_60){
+		if($in->getProtocolId() <= ProtocolInfo::PROTOCOL_1_20_80){
 			$this->dropBook = $in->getBool();
 		}
 	}
@@ -50,7 +50,7 @@ class LecternUpdatePacket extends DataPacket implements ServerboundPacket{
 		$out->putByte($this->page);
 		$out->putByte($this->totalPages);
 		$out->putBlockPosition($this->blockPosition);
-		if($out->getProtocolId() <= ProtocolInfo::PROTOCOL_1_20_60){
+		if($out->getProtocolId() <= ProtocolInfo::PROTOCOL_1_20_80){
 			$out->putBool($this->dropBook);
 		}
 	}
