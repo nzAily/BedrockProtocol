@@ -71,7 +71,7 @@ class MobEffectPacket extends DataPacket implements ClientboundPacket{
 		$this->duration = $in->getVarInt();
 		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_40){
 			$this->tick = $in->getUnsignedVarLong();
-		}elseif($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_70){
+		}elseif($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80){
 			$this->tick = $in->getLLong();
 		}
 	}
@@ -85,7 +85,7 @@ class MobEffectPacket extends DataPacket implements ClientboundPacket{
 		$out->putVarInt($this->duration);
 		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_40){
 			$out->putUnsignedVarLong($this->tick);
-		}elseif($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_70){
+		}elseif($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80){
 			$out->putLLong($this->tick);
 		}
 	}
