@@ -91,7 +91,7 @@ class LevelChunkPacket extends DataPacket implements ClientboundPacket{
 
 	protected function decodePayload(PacketSerializer $in) : void{
 		$this->chunkPosition = ChunkPosition::read($in);
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_60){
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80){
 			$this->dimensionId = $in->getVarInt();
 		}
 
@@ -123,7 +123,7 @@ class LevelChunkPacket extends DataPacket implements ClientboundPacket{
 
 	protected function encodePayload(PacketSerializer $out) : void{
 		$this->chunkPosition->write($out);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_60){
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80){
 			$out->putVarInt($this->dimensionId);
 		}
 
