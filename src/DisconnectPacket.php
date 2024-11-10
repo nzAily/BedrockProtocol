@@ -39,7 +39,7 @@ class DisconnectPacket extends DataPacket implements ClientboundPacket, Serverbo
 	}
 
 	protected function decodePayload(PacketSerializer $in) : void{
-		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_40){
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80){
 			$this->reason = $in->getVarInt();
 		}
 		$skipMessage = $in->getBool();
@@ -50,7 +50,7 @@ class DisconnectPacket extends DataPacket implements ClientboundPacket, Serverbo
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_40){
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80){
 			$out->putVarInt($this->reason);
 		}
 		$out->putBool($skipMessage = $this->message === null && $this->filteredMessage === null);
