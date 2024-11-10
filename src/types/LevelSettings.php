@@ -107,7 +107,7 @@ final class LevelSettings{
 		$this->difficulty = $in->getVarInt();
 		$this->spawnPosition = $in->getBlockPosition();
 		$this->hasAchievementsDisabled = $in->getBool();
-		$this->editorWorldType = $in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_30 ? $in->getVarInt() : ($in->getBool() ? EditorWorldType::PROJECT : EditorWorldType::NON_EDITOR);
+		$this->editorWorldType = $in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80 ? $in->getVarInt() : ($in->getBool() ? EditorWorldType::PROJECT : EditorWorldType::NON_EDITOR);
 		$this->createdInEditorMode = $in->getBool();
 		$this->exportedFromEditorMode = $in->getBool();
 		$this->time = $in->getVarInt();
