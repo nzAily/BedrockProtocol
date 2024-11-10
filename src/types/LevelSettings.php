@@ -165,7 +165,7 @@ final class LevelSettings{
 		$out->putVarInt($this->difficulty);
 		$out->putBlockPosition($this->spawnPosition);
 		$out->putBool($this->hasAchievementsDisabled);
-		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_30){
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_20_80){
 			$out->putVarInt($this->editorWorldType);
 		}else{
 			$out->putBool($this->editorWorldType !== EditorWorldType::NON_EDITOR);
