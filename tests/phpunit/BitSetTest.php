@@ -28,10 +28,10 @@ class BitSetTest extends TestCase{
 		$writeTest->set(0, true);
 		$writeTest->set(64, true);
 
-		$packetSerializer = PacketSerializer::encoder();
+		$packetSerializer = PacketSerializer::encoder(ProtocolInfo::CURRENT_PROTOCOL);
 		$writeTest->write($packetSerializer);
 
-		$packetSerializer = PacketSerializer::decoder($packetSerializer->getBuffer(), 0);
+		$packetSerializer = PacketSerializer::decoder(ProtocolInfo::CURRENT_PROTOCOL, $packetSerializer->getBuffer(), 0);
 		$readTest = BitSet::read($packetSerializer, 65);
 
 		assertTrue($this->setsEqual($writeTest, $readTest));
@@ -43,10 +43,10 @@ class BitSetTest extends TestCase{
 
 		$test2->set(64, true);
 
-		$packetSerializer = PacketSerializer::encoder();
+		$packetSerializer = PacketSerializer::encoder(ProtocolInfo::CURRENT_PROTOCOL);
 		$test->write($packetSerializer);
 
-		$packetSerializer2 = PacketSerializer::encoder();
+		$packetSerializer2 = PacketSerializer::encoder(ProtocolInfo::CURRENT_PROTOCOL);
 		$test2->write($packetSerializer2);
 
 		self::assertEquals($packetSerializer->getBuffer(), $packetSerializer2->getBuffer());
@@ -56,20 +56,20 @@ class BitSetTest extends TestCase{
 		$writeTest = new BitSet(128);
 		$writeTest->set(127, true);
 
-		$packetSerializer = PacketSerializer::encoder();
+		$packetSerializer = PacketSerializer::encoder(ProtocolInfo::CURRENT_PROTOCOL);
 		$writeTest->write($packetSerializer);
 
-		$packetSerializer = PacketSerializer::decoder($packetSerializer->getBuffer(), 0);
+		$packetSerializer = PacketSerializer::decoder(ProtocolInfo::CURRENT_PROTOCOL, $packetSerializer->getBuffer(), 0);
 		$readTest = BitSet::read($packetSerializer, 128);
 
 		assertTrue($this->setsEqual($writeTest, $readTest));
 	}
 
 	public function testVarUnsignedLongCompatibility() : void{
-		$packetSerializer = PacketSerializer::encoder();
+		$packetSerializer = PacketSerializer::encoder(ProtocolInfo::CURRENT_PROTOCOL);
 		$packetSerializer->putUnsignedVarLong(0 | 1 << 63);
 
-		$packetSerializer = PacketSerializer::decoder($packetSerializer->getBuffer(), 0);
+		$packetSerializer = PacketSerializer::decoder(ProtocolInfo::CURRENT_PROTOCOL, $packetSerializer->getBuffer(), 0);
 		$readTest = BitSet::read($packetSerializer, 64);
 
 		$expectedResult = new BitSet(64);
