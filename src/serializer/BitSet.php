@@ -82,6 +82,13 @@ class BitSet{
 		return count($this->parts);
 	}
 
+	/**
+	 * @return int[]
+	 */
+	public function getParts() : array{
+		return $this->parts;
+	}
+
 	private static function getExpectedPartsCount(int $length) : int{
 		return intdiv($length + self::INT_BITS - 1, self::INT_BITS);
 	}
