@@ -164,4 +164,7 @@ final class ClientData{
 	/** @var string */
 	public string $Waterdog_IP = "";
 
+	/** @var string */
+	public string $Waterdog_XUID = "";
+
 }
