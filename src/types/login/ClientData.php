@@ -160,4 +160,8 @@ final class ClientData{
 
 	/** @required */
 	public int $UIProfile;
+
+	/** @var string */
+	public string $Waterdog_IP = "";
+
 }
