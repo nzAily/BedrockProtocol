@@ -46,7 +46,7 @@ final class CameraPreset{
 		private ?int $audioListenerType,
 		private ?bool $playerEffects,
 		private ?bool $alignTargetAndCameraForward,
-		private ?bool $aimAssist,
+		private ?CameraPresetAimAssist $aimAssist,
 	){}
 
 	public function getName() : string{ return $this->name; }
@@ -91,7 +91,7 @@ final class CameraPreset{
 
 	public function getAlignTargetAndCameraForward() : ?bool{ return $this->alignTargetAndCameraForward; }
 
-	public function getAimAssist() : ?bool{ return $this->aimAssist; }
+	public function getAimAssist() : ?CameraPresetAimAssist{ return $this->aimAssist; }
 
 	public static function read(PacketSerializer $in) : self{
 		$name = $in->getString();
@@ -129,7 +129,11 @@ final class CameraPreset{
 		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_40){
 			$alignTargetAndCameraForward = $in->readOptional($in->getBool(...));
 			if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_50){
-				$aimAssist = $in->readOptional($in->getBool(...));
+				if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+					$aimAssist = $in->readOptional(fn() => CameraPresetAimAssist::read($in));
+				}else{
+					$aimAssist = $in->readOptional($in->getBool(...)) ? new CameraPresetAimAssist(null, null, null, null) : null;
+				}
 			}
 		}
 
@@ -226,7 +230,11 @@ final class CameraPreset{
 		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_40){
 			$out->writeOptional($this->alignTargetAndCameraForward, $out->putBool(...));
 			if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_50){
-				$out->writeOptional($this->aimAssist, $out->putBool(...));
+				if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+					$out->writeOptional($this->aimAssist, fn(CameraPresetAimAssist $v) => $v->write($out));
+				}else{
+					$out->writeOptional($this->aimAssist, fn(CameraPresetAimAssist $v) => $out->putBool(true));
+				}
 			}
 		}
 	}
