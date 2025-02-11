@@ -630,7 +630,7 @@ trait PacketHandlerDefaultImplTrait{
 		return false;
 	}
 
-	public function handleItemComponent(ItemComponentPacket $packet) : bool{
+	public function handleItemRegistry(ItemRegistryPacket $packet) : bool{
 		return false;
 	}
 
@@ -847,6 +847,14 @@ trait PacketHandlerDefaultImplTrait{
 	}
 
 	public function handleCameraAimAssistPresets(CameraAimAssistPresetsPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleCameraAimAssistInstruction(CameraAimAssistInstructionPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleMovementPredictionSync(MovementPredictionSyncPacket $packet) : bool{
 		return false;
 	}
 }

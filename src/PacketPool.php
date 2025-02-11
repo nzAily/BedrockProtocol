@@ -185,7 +185,7 @@ class PacketPool{
 		$this->registerPacket(new CameraShakePacket());
 		$this->registerPacket(new PlayerFogPacket());
 		$this->registerPacket(new CorrectPlayerMovePredictionPacket());
-		$this->registerPacket(new ItemComponentPacket());
+		$this->registerPacket(new ItemRegistryPacket());
 		$this->registerPacket(new ClientboundDebugRendererPacket());
 		$this->registerPacket(new SyncActorPropertyPacket());
 		$this->registerPacket(new AddVolumeEntityPacket());
@@ -240,6 +240,8 @@ class PacketPool{
 		$this->registerPacket(new MovementEffectPacket());
 		$this->registerPacket(new SetMovementAuthorityPacket());
 		$this->registerPacket(new CameraAimAssistPresetsPacket());
+		$this->registerPacket(new CameraAimAssistInstructionPacket());
+		$this->registerPacket(new MovementPredictionSyncPacket());
 	}
 
 	public function registerPacket(Packet $packet) : void{

@@ -41,6 +41,8 @@ final class CameraPreset{
 		private ?Vector2 $viewOffset,
 		private ?Vector3 $entityOffset,
 		private ?float $radius,
+		private ?float $yawLimitMin,
+		private ?float $yawLimitMax,
 		private ?int $audioListenerType,
 		private ?bool $playerEffects,
 		private ?bool $alignTargetAndCameraForward,
@@ -79,6 +81,10 @@ final class CameraPreset{
 
 	public function getRadius() : ?float{ return $this->radius; }
 
+	public function getYawLimitMin() : ?float{ return $this->yawLimitMin; }
+
+	public function getYawLimitMax() : ?float{ return $this->yawLimitMax; }
+
 	public function getAudioListenerType() : ?int{ return $this->audioListenerType; }
 
 	public function getPlayerEffects() : ?bool{ return $this->playerEffects; }
@@ -113,6 +119,10 @@ final class CameraPreset{
 				$entityOffset = $in->readOptional($in->getVector3(...));
 			}
 			$radius = $in->readOptional($in->getLFloat(...));
+			if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+				$yawLimitMin = $in->readOptional($in->getLFloat(...));
+				$yawLimitMax = $in->readOptional($in->getLFloat(...));
+			}
 		}
 		$audioListenerType = $in->readOptional($in->getByte(...));
 		$playerEffects = $in->readOptional($in->getBool(...));
@@ -140,6 +150,8 @@ final class CameraPreset{
 			$viewOffset ?? null,
 			$entityOffset ?? null,
 			$radius ?? null,
+			$yawLimitMin ?? null,
+			$yawLimitMax ?? null,
 			$audioListenerType,
 			$playerEffects,
 			$alignTargetAndCameraForward ?? null,
@@ -165,7 +177,9 @@ final class CameraPreset{
 			null,
 			null,
 			null,
-			$nbt->getTag("audio_listener_type") === null ? null : match($nbt->getString("audio_listener_type")){
+			null,
+			null,
+			$nbt->getTag("audio_listener_type") === null ? null : match ($nbt->getString("audio_listener_type")){
 				"camera" => self::AUDIO_LISTENER_TYPE_CAMERA,
 				"player" => self::AUDIO_LISTENER_TYPE_PLAYER,
 				default => throw new \InvalidArgumentException("Invalid audio listener type: " . $nbt->getString("audio_listener_type")),
@@ -202,6 +216,10 @@ final class CameraPreset{
 				$out->writeOptional($this->entityOffset, $out->putVector3(...));
 			}
 			$out->writeOptional($this->radius, $out->putLFloat(...));
+			if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+				$out->writeOptional($this->yawLimitMin, $out->putLFloat(...));
+				$out->writeOptional($this->yawLimitMax, $out->putLFloat(...));
+			}
 		}
 		$out->writeOptional($this->audioListenerType, $out->putByte(...));
 		$out->writeOptional($this->playerEffects, $out->putBool(...));
