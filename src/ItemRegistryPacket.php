@@ -49,11 +49,13 @@ class ItemRegistryPacket extends DataPacket implements ClientboundPacket{
 		$this->entries = [];
 		for($i = 0, $len = $in->getUnsignedVarInt(); $i < $len; ++$i){
 			$stringId = $in->getString();
-			$numericId = $in->getSignedLShort();
-			$isComponentBased = $in->getBool();
-			$version = $in->getVarInt();
+			if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+				$numericId = $in->getSignedLShort();
+				$isComponentBased = $in->getBool();
+				$version = $in->getVarInt();
+			}
 			$nbt = $in->getNbtCompoundRoot();
-			$this->entries[] = new ItemTypeEntry($stringId, $numericId, $isComponentBased, $version, new CacheableNbt($nbt));
+			$this->entries[] = new ItemTypeEntry($stringId, $numericId ?? -1, $isComponentBased ?? false, $version ?? -1, new CacheableNbt($nbt));
 		}
 	}
 
@@ -61,9 +63,11 @@ class ItemRegistryPacket extends DataPacket implements ClientboundPacket{
 		$out->putUnsignedVarInt(count($this->entries));
 		foreach($this->entries as $entry){
 			$out->putString($entry->getStringId());
-			$out->putLShort($entry->getNumericId());
-			$out->putBool($entry->isComponentBased());
-			$out->putVarInt($entry->getVersion());
+			if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+				$out->putLShort($entry->getNumericId());
+				$out->putBool($entry->isComponentBased());
+				$out->putVarInt($entry->getVersion());
+			}
 			$out->put($entry->getComponentNbt()->getEncodedNbt());
 		}
 	}

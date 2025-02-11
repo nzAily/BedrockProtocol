@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types\inventory;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 
 final class CreativeItemEntry{
@@ -32,13 +33,17 @@ final class CreativeItemEntry{
 	public static function read(PacketSerializer $in) : self{
 		$entryId = $in->readCreativeItemNetId();
 		$item = $in->getItemStackWithoutStackId();
-		$groupId = $in->getUnsignedVarInt();
-		return new self($entryId, $item, $groupId);
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$groupId = $in->getUnsignedVarInt();
+		}
+		return new self($entryId, $item, $groupId ?? -1);
 	}
 
 	public function write(PacketSerializer $out) : void{
 		$out->writeCreativeItemNetId($this->entryId);
 		$out->putItemStackWithoutStackId($this->item);
-		$out->putUnsignedVarInt($this->groupId);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$out->putUnsignedVarInt($this->groupId);
+		}
 	}
 }

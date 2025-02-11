@@ -121,7 +121,9 @@ class BossEventPacket extends DataPacket implements ClientboundPacket, Serverbou
 			/** @noinspection PhpMissingBreakStatementInspection */
 			case self::TYPE_SHOW:
 				$this->title = $in->getString();
-				$this->filteredTitle = $in->getString();
+				if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+					$this->filteredTitle = $in->getString();
+				}
 				$this->healthPercent = $in->getLFloat();
 			/** @noinspection PhpMissingBreakStatementInspection */
 			case self::TYPE_PROPERTIES:
@@ -139,7 +141,9 @@ class BossEventPacket extends DataPacket implements ClientboundPacket, Serverbou
 				break;
 			case self::TYPE_TITLE:
 				$this->title = $in->getString();
-				$this->filteredTitle = $in->getString();
+				if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+					$this->filteredTitle = $in->getString();
+				}
 				break;
 			default:
 				break;
@@ -158,7 +162,9 @@ class BossEventPacket extends DataPacket implements ClientboundPacket, Serverbou
 			/** @noinspection PhpMissingBreakStatementInspection */
 			case self::TYPE_SHOW:
 				$out->putString($this->title);
-				$out->putString($this->filteredTitle);
+				if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+					$out->putString($this->filteredTitle);
+				}
 				$out->putLFloat($this->healthPercent);
 			/** @noinspection PhpMissingBreakStatementInspection */
 			case self::TYPE_PROPERTIES:
@@ -172,7 +178,9 @@ class BossEventPacket extends DataPacket implements ClientboundPacket, Serverbou
 				break;
 			case self::TYPE_TITLE:
 				$out->putString($this->title);
-				$out->putString($this->filteredTitle);
+				if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+					$out->putString($this->filteredTitle);
+				}
 				break;
 			default:
 				break;

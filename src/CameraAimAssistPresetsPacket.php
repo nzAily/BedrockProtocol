@@ -64,7 +64,9 @@ class CameraAimAssistPresetsPacket extends DataPacket implements ClientboundPack
 			$this->presets[] = CameraAimAssistPreset::read($in);
 		}
 
-		$this->operation = $in->getByte();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$this->operation = $in->getByte();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -78,7 +80,9 @@ class CameraAimAssistPresetsPacket extends DataPacket implements ClientboundPack
 			$preset->write($out);
 		}
 
-		$out->putByte($this->operation);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$out->putByte($this->operation);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

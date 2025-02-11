@@ -46,9 +46,11 @@ class CreativeContentPacket extends DataPacket implements ClientboundPacket{
 	public function getItems() : array{ return $this->items; }
 
 	protected function decodePayload(PacketSerializer $in) : void{
-		$this->groups = [];
-		for($i = 0, $len = $in->getUnsignedVarInt(); $i < $len; ++$i){
-			$this->groups[] = CreativeGroupEntry::read($in);
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$this->groups = [];
+			for($i = 0, $len = $in->getUnsignedVarInt(); $i < $len; ++$i){
+				$this->groups[] = CreativeGroupEntry::read($in);
+			}
 		}
 
 		$this->items = [];
@@ -58,9 +60,11 @@ class CreativeContentPacket extends DataPacket implements ClientboundPacket{
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
-		$out->putUnsignedVarInt(count($this->groups));
-		foreach($this->groups as $entry){
-			$entry->write($out);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$out->putUnsignedVarInt(count($this->groups));
+			foreach($this->groups as $entry){
+				$entry->write($out);
+			}
 		}
 
 		$out->putUnsignedVarInt(count($this->items));

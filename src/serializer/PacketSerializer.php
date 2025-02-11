@@ -692,7 +692,9 @@ class PacketSerializer extends BinaryStream{
 		$result = new StructureEditorData();
 
 		$result->structureName = $this->getString();
-		$result->filteredStructureName = $this->getString();
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$result->filteredStructureName = $this->getString();
+		}
 		$result->structureDataField = $this->getString();
 
 		$result->includePlayers = $this->getBool();
@@ -707,7 +709,9 @@ class PacketSerializer extends BinaryStream{
 
 	public function putStructureEditorData(StructureEditorData $structureEditorData) : void{
 		$this->putString($structureEditorData->structureName);
-		$this->putString($structureEditorData->filteredStructureName);
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$this->putString($structureEditorData->filteredStructureName);
+		}
 		$this->putString($structureEditorData->structureDataField);
 
 		$this->putBool($structureEditorData->includePlayers);

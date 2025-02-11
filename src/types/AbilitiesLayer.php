@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\protocol\types;
 
 use pocketmine\network\mcpe\protocol\PacketDecodeException;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 
 final class AbilitiesLayer{
@@ -81,7 +82,7 @@ final class AbilitiesLayer{
 		$setAbilities = $in->getLInt();
 		$setAbilityValues = $in->getLInt();
 		$flySpeed = $in->getLFloat();
-		$verticalFlySpeed = $in->getLFloat();
+		$verticalFlySpeed = $in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60 ? $in->getLFloat() : 0.0;
 		$walkSpeed = $in->getLFloat();
 
 		$boolAbilities = [];
@@ -99,7 +100,7 @@ final class AbilitiesLayer{
 			}
 			$flySpeed = null;
 		}
-		if(($setAbilities & (1 << self::ABILITY_VERTICAL_FLY_SPEED)) === 0){
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60 && ($setAbilities & (1 << self::ABILITY_VERTICAL_FLY_SPEED)) === 0){
 			if($verticalFlySpeed !== 0.0){
 				throw new PacketDecodeException("Vertical fly speed should be zero if the layer does not set it");
 			}
@@ -127,7 +128,7 @@ final class AbilitiesLayer{
 		if($this->flySpeed !== null){
 			$setAbilities |= (1 << self::ABILITY_FLY_SPEED);
 		}
-		if($this->verticalFlySpeed !== null){
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60 && $this->verticalFlySpeed !== null){
 			$setAbilities |= (1 << self::ABILITY_VERTICAL_FLY_SPEED);
 		}
 		if($this->walkSpeed !== null){
@@ -137,7 +138,9 @@ final class AbilitiesLayer{
 		$out->putLInt($setAbilities);
 		$out->putLInt($setAbilityValues);
 		$out->putLFloat($this->flySpeed ?? 0);
-		$out->putLFloat($this->verticalFlySpeed ?? 0);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$out->putLFloat($this->verticalFlySpeed ?? 0);
+		}
 		$out->putLFloat($this->walkSpeed ?? 0);
 	}
 }

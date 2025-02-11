@@ -19,6 +19,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\BlockPaletteEntry;
 use pocketmine\network\mcpe\protocol\types\CacheableNbt;
+use pocketmine\network\mcpe\protocol\types\ItemTypeEntry;
 use pocketmine\network\mcpe\protocol\types\LevelSettings;
 use pocketmine\network\mcpe\protocol\types\NetworkPermissions;
 use pocketmine\network\mcpe\protocol\types\PlayerMovementSettings;
@@ -71,10 +72,18 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 	public int $blockPaletteChecksum;
 
 	/**
+	 * @var ItemTypeEntry[]
+	 * @phpstan-var list<ItemTypeEntry>
+	 */
+	public array $itemTable;
+
+	/**
 	 * @generate-create-func
 	 * @param BlockPaletteEntry[] $blockPalette
+	 * @param ItemTypeEntry[]     $itemTable
 	 * @phpstan-param CacheableNbt<CompoundTag> $playerActorProperties
 	 * @phpstan-param list<BlockPaletteEntry>   $blockPalette
+	 * @phpstan-param list<ItemTypeEntry>       $itemTable
 	 */
 	public static function create(
 		int $actorUniqueId,
@@ -101,6 +110,7 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		NetworkPermissions $networkPermissions,
 		array $blockPalette,
 		int $blockPaletteChecksum,
+		array $itemTable,
 	) : self{
 		$result = new self;
 		$result->actorUniqueId = $actorUniqueId;
@@ -127,6 +137,7 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$result->networkPermissions = $networkPermissions;
 		$result->blockPalette = $blockPalette;
 		$result->blockPaletteChecksum = $blockPaletteChecksum;
+		$result->itemTable = $itemTable;
 		return $result;
 	}
 
@@ -156,6 +167,17 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 			$blockName = $in->getString();
 			$state = $in->getNbtCompoundRoot();
 			$this->blockPalette[] = new BlockPaletteEntry($blockName, new CacheableNbt($state));
+		}
+
+		if($in->getProtocolId() <= ProtocolInfo::PROTOCOL_1_21_50){
+			$this->itemTable = [];
+			for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
+				$stringId = $in->getString();
+				$numericId = $in->getSignedLShort();
+				$isComponentBased = $in->getBool();
+
+				$this->itemTable[] = new ItemTypeEntry($stringId, $numericId, $isComponentBased, -1, new CacheableNbt(new CompoundTag()));
+			}
 		}
 
 		$this->multiplayerCorrelationId = $in->getString();
@@ -194,6 +216,15 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		foreach($this->blockPalette as $entry){
 			$out->putString($entry->getName());
 			$out->put($entry->getStates()->getEncodedNbt());
+		}
+
+		if($out->getProtocolId() <= ProtocolInfo::PROTOCOL_1_21_50){
+			$out->putUnsignedVarInt(count($this->itemTable));
+			foreach($this->itemTable as $entry){
+				$out->putString($entry->getStringId());
+				$out->putLShort($entry->getNumericId());
+				$out->putBool($entry->isComponentBased());
+			}
 		}
 
 		$out->putString($this->multiplayerCorrelationId);
