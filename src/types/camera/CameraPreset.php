@@ -132,7 +132,7 @@ final class CameraPreset{
 				if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
 					$aimAssist = $in->readOptional(fn() => CameraPresetAimAssist::read($in));
 				}else{
-					$aimAssist = $in->readOptional($in->getBool(...)) ? new CameraPresetAimAssist(null, null, null, null) : null;
+					$aimAssist = $in->readOptional(fn() => $in->getBool() ? new CameraPresetAimAssist(null, null, null, null) : null);
 				}
 			}
 		}
