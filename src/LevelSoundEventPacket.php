@@ -64,7 +64,9 @@ class LevelSoundEventPacket extends DataPacket implements ClientboundPacket, Ser
 		$this->entityType = $in->getString();
 		$this->isBabyMob = $in->getBool();
 		$this->disableRelativeVolume = $in->getBool();
-		$this->actorUniqueId = $in->getLLong(); //WHY IS THIS NON-STANDARD?
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_70){
+			$this->actorUniqueId = $in->getLLong(); //WHY IS THIS NON-STANDARD?
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -74,7 +76,9 @@ class LevelSoundEventPacket extends DataPacket implements ClientboundPacket, Ser
 		$out->putString($this->entityType);
 		$out->putBool($this->isBabyMob);
 		$out->putBool($this->disableRelativeVolume);
-		$out->putLLong($this->actorUniqueId);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_70){
+			$out->putLLong($this->actorUniqueId);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

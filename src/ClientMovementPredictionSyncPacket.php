@@ -117,7 +117,7 @@ class ClientMovementPredictionSyncPacket extends DataPacket implements Serverbou
 	public function getActorFlyingState() : bool{ return $this->actorFlyingState; }
 
 	protected function decodePayload(PacketSerializer $in) : void{
-		$this->flags = BitSet::read($in, self::FLAG_LENGTH);
+		$this->flags = BitSet::read($in, $in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_70 ? self::FLAG_LENGTH : 120);
 		$this->scale = $in->getLFloat();
 		$this->width = $in->getLFloat();
 		$this->height = $in->getLFloat();
@@ -128,11 +128,13 @@ class ClientMovementPredictionSyncPacket extends DataPacket implements Serverbou
 		$this->health = $in->getLFloat();
 		$this->hunger = $in->getLFloat();
 		$this->actorUniqueId = $in->getActorUniqueId();
-		$this->actorFlyingState = $in->getBool();
+		if($in->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_70){
+			$this->actorFlyingState = $in->getBool();
+		}
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
-		$this->flags->write($out);
+		$this->flags->write($out, $out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_70 ? self::FLAG_LENGTH : 120);
 		$out->putLFloat($this->scale);
 		$out->putLFloat($this->width);
 		$out->putLFloat($this->height);
@@ -143,7 +145,9 @@ class ClientMovementPredictionSyncPacket extends DataPacket implements Serverbou
 		$out->putLFloat($this->health);
 		$out->putLFloat($this->hunger);
 		$out->putActorUniqueId($this->actorUniqueId);
-		$out->putBool($this->actorFlyingState);
+		if($out->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_70){
+			$out->putBool($this->actorFlyingState);
+		}
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{
