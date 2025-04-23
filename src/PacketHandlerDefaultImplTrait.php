@@ -630,7 +630,7 @@ trait PacketHandlerDefaultImplTrait{
 		return false;
 	}
 
-	public function handleItemComponent(ItemComponentPacket $packet) : bool{
+	public function handleItemRegistry(ItemRegistryPacket $packet) : bool{
 		return false;
 	}
 
@@ -847,6 +847,26 @@ trait PacketHandlerDefaultImplTrait{
 	}
 
 	public function handleCameraAimAssistPresets(CameraAimAssistPresetsPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleClientCameraAimAssist(ClientCameraAimAssistPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleClientMovementPredictionSync(ClientMovementPredictionSyncPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleUpdateClientOptions(UpdateClientOptionsPacket $packet) : bool{
+		return false;
+	}
+
+	public function handlePlayerVideoCapturePacket(PlayerVideoCapturePacket $packet) : bool{
+		return false;
+	}
+
+	public function handlePlayerUpdateEntityOverridesPacket(PlayerUpdateEntityOverridesPacket $packet) : bool{
 		return false;
 	}
 }

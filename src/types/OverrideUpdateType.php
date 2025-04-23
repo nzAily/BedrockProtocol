@@ -14,17 +14,11 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol\types;
 
-final class ItemComponentPacketEntry{
-	/**
-	 * @phpstan-param CacheableNbt<\pocketmine\nbt\tag\CompoundTag> $componentNbt
-	 */
-	public function __construct(
-		private string $name,
-		private CacheableNbt $componentNbt
-	){}
+enum OverrideUpdateType : int{
+	use PacketIntEnumTrait;
 
-	public function getName() : string{ return $this->name; }
-
-	/** @phpstan-return CacheableNbt<\pocketmine\nbt\tag\CompoundTag> */
-	public function getComponentNbt() : CacheableNbt{ return $this->componentNbt; }
+	case CLEAR_OVERRIDES = 0;
+	case REMOVE_OVERRIDE = 1;
+	case SET_INT_OVERRIDE = 2;
+	case SET_FLOAT_OVERRIDE = 3;
 }

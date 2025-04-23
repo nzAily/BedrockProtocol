@@ -138,4 +138,8 @@ final class EntityMetadataFlags{
 	public const TIMER_FLAG_2 = 116;
 	public const TIMER_FLAG_3 = 117;
 	public const BODY_ROTATION_BLOCKED = 118;
+	public const RENDER_WHEN_INVISIBLE = 119;
+	public const BODY_ROTATION_AXIS_ALIGNED = 120;
+	public const COLLIDABLE = 121;
+	public const WASD_AIR_CONTROLLED = 122;
 }

@@ -322,7 +322,7 @@ interface PacketHandlerInterface{
 
 	public function handleCorrectPlayerMovePrediction(CorrectPlayerMovePredictionPacket $packet) : bool;
 
-	public function handleItemComponent(ItemComponentPacket $packet) : bool;
+	public function handleItemRegistry(ItemRegistryPacket $packet) : bool;
 
 	public function handleClientboundDebugRenderer(ClientboundDebugRendererPacket $packet) : bool;
 
@@ -431,4 +431,14 @@ interface PacketHandlerInterface{
 	public function handleSetMovementAuthority(SetMovementAuthorityPacket $packet) : bool;
 
 	public function handleCameraAimAssistPresets(CameraAimAssistPresetsPacket $packet) : bool;
+
+	public function handleClientCameraAimAssist(ClientCameraAimAssistPacket $packet) : bool;
+
+	public function handleClientMovementPredictionSync(ClientMovementPredictionSyncPacket $packet) : bool;
+
+	public function handleUpdateClientOptions(UpdateClientOptionsPacket $packet) : bool;
+
+	public function handlePlayerVideoCapturePacket(PlayerVideoCapturePacket $packet) : bool;
+
+	public function handlePlayerUpdateEntityOverridesPacket(PlayerUpdateEntityOverridesPacket $packet) : bool;
 }

@@ -251,7 +251,7 @@ class PacketSerializer extends BinaryStream{
 	/**
 	 * @return int[]
 	 * @phpstan-return array{0: int, 1: int, 2: int}
-	 * @throws PacketDecodeException
+	 * @throws BinaryDataException
 	 */
 	private function getItemStackHeader() : array{
 		$id = $this->getVarInt();
@@ -692,6 +692,9 @@ class PacketSerializer extends BinaryStream{
 		$result = new StructureEditorData();
 
 		$result->structureName = $this->getString();
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$result->filteredStructureName = $this->getString();
+		}
 		$result->structureDataField = $this->getString();
 
 		$result->includePlayers = $this->getBool();
@@ -706,6 +709,9 @@ class PacketSerializer extends BinaryStream{
 
 	public function putStructureEditorData(StructureEditorData $structureEditorData) : void{
 		$this->putString($structureEditorData->structureName);
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$this->putString($structureEditorData->filteredStructureName);
+		}
 		$this->putString($structureEditorData->structureDataField);
 
 		$this->putBool($structureEditorData->includePlayers);
